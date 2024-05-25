@@ -3,9 +3,7 @@ import './style.css';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
-const firebaseConfig = {
-  /* your firebase config*/
-};
+const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);
 
 const servers = {
   iceServers: [
@@ -111,7 +109,7 @@ export default class WebRTC {
     };
   }
 
-  sendToDrone(data) {
+  sendToClient(data) {
     if (this.dataChannelReady) {
       this.dataChannel.send(data);
     } else {

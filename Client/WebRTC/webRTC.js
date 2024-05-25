@@ -2,10 +2,9 @@ import './style.css';
 
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import { isEqual } from 'lodash'
 
-const firebaseConfig = {
-  /*your firebase config*/
-};
+const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);
 
 const servers = {
   iceServers: [
@@ -50,6 +49,7 @@ export default class WebRTC {
         this.dataChannel = null;
 
         this.dataChannelReady = false;
+        this.prevData = null;
 
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
@@ -124,7 +124,11 @@ export default class WebRTC {
 
     sendToDrone(data) {
         if (this.dataChannelReady) {
-            this.dataChannel.send(JSON.stringify(data));  
+            // Send the data to drone only when it's different
+            if (!isEqual(data, this.prevData)) {
+                this.dataChannel.send(JSON.stringify(data));  
+                this.prevData = JSON.parse(JSON.stringify(data));
+            }
         } else {
             console.log("Error: Data channel not ready");
         }
