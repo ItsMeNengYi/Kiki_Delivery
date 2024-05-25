@@ -63,7 +63,8 @@ def decode_websocket_frame(frame):
         payload_data = frame[6:]
 
     if len(payload_data) != payload_length:
-        raise ValueError("Payload data length mismatch")
+        return "Error Payload data length mismatch"
+        # raise ValueError("Payload data length mismatch")
 
     decoded = bytearray(payload_length)
     for i in range(payload_length):

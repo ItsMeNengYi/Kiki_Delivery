@@ -7,9 +7,15 @@
     "serve": "vite preview"
   },
   "devDependencies": {
-    "vite": "^2.0.5"
+    "vite": "^2.0.5",
+    "vite-plugin-require-transform": "^1.0.21"
   },
   "dependencies": {
-    "firebase": "^8.2.10"
+    "@rollup/plugin-commonjs": "^25.0.8",
+    "dotenv": "^16.4.5",
+    "firebase": "^8.2.10",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "vite-plugin-require": "^1.2.14",
+    "ws": "^8.17.0"
   }
 }

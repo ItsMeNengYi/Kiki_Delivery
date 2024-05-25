@@ -1,8 +1,8 @@
-import "/webRTC/style.css"
 import "/style.css"
 
 import WebRTC from "/WebRTC/webRTC";
 import VirtualJoystick from '/components/Joystick/joystick';
+
 
 let _droneControl = {
     message:"none",
@@ -10,7 +10,7 @@ let _droneControl = {
         x : 0,
         y : 0
     },
-    inPlaceRotation : {
+    inPlaceRot : {
         left : false,
         right : false
     },
@@ -38,13 +38,12 @@ const joystick = new VirtualJoystick(joystickContainer, {
     handleColor: 'white',
     handleRadius: 30,
     onChange: function(delta) {
-      document.getElementById('joystick-debug').textContent = "x:" 
-      + String(Math.round(delta.x*100)/100) 
-      + " y:" 
-      + String(Math.round(delta.y*100)/100);
-      _droneControl.movement.x = delta.x;
-      _droneControl.movement.y = delta.y;
-      webrtc.sendToDrone(_droneControl);  
+        const x = Math.round(delta.x*100)/100;
+        const y = Math.round(delta.y*100)/100; 
+        document.getElementById('joystick-debug').textContent = "x:" + String(x) + " y:" + String(y);
+        _droneControl.movement.x = x;
+        _droneControl.movement.y = y;
+        webrtc.sendToDrone(_droneControl);  
     }
 }
 );
