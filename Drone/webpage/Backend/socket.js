@@ -1,20 +1,24 @@
+
 export default class Socket {
     constructor() {
-        this.socket = new WebSocket('ws://localhost:8765');
-        this.socketReady = false;
+        this.client = new WebSocket('ws://localhost:8765');
     }
 
     initialise() {
-        socket.onopen = () => {
+        this.client.addEventListener('open', (event) => {
             console.log('Connected to server!');
-            socket.send('Hello from frontend!')
-            this.socketReady = true;
-        };
-        socket.onmessage = (event) => this.onDataCallback(event.data);
-        
-        socket.onclose = () => {
-            console.log('WebSocket connection closed');
-        };
+            this.client.send('hello from frontend');
+        });
+
+        this.client.addEventListener('message', (event) => { this.onDataCallback(event.data)});
+
+        this.client.addEventListener('close', (event) => {
+            console.log('Disconnected from server');
+        });
+
+        this.client.addEventListener('error', (error) => {
+            console.error('Socket error:', err);
+        });
     }
 
     onDataCallback(data) {
@@ -22,10 +26,12 @@ export default class Socket {
     }
 
     sendData(data) {
-        if (this.socketReady) {
-            socket.send(data);
+        if (this.client.readyState == WebSocket.OPEN) {
+            this.client.send(data);
         } else {
-            console.log("Error, socket is not ready");
+            console.log("Error, socket is not initialised");
         }
     }
+
+
 }
