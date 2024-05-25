@@ -10,4 +10,4 @@ const socket = new Socket();
 webRTC.initializeConnection();
 socket.initialise();
 
-webRTC.setOnDataCallback(socket.sendData);
+webRTC.setOnDataCallback((data) => socket.sendData(data));
