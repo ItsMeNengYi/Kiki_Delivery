@@ -161,6 +161,15 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 30
 text = "Reset Password"
 
+[node name="WebTestButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1289.0
+offset_top = 94.0
+offset_right = 1676.0
+offset_bottom = 206.0
+text = "Open Client Controller App"
+
 [connection signal="pressed" from="LoginButton" to="." method="_on_login_button_pressed"]
 [connection signal="pressed" from="SignUpButton" to="." method="_on_sign_up_button_pressed"]
 [connection signal="pressed" from="ResetPasswordButton" to="." method="_on_reset_password_button_pressed"]
+[connection signal="pressed" from="WebTestButton" to="." method="_on_web_test_button_pressed"]

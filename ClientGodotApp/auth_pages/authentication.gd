@@ -55,3 +55,8 @@ func _on_reset_password_button_pressed():
 		Firebase.Auth.send_password_reset_email($EmailLineEdit.text)
 		$StateLabel.text = "Password reset email sent."
 	pass # Replace with function body.
+
+
+func _on_web_test_button_pressed():
+	OS.shell_open("..\\Client\\index.html")
+	pass # Replace with function body.
