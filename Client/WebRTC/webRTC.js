@@ -4,14 +4,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDhKetrwxZDyTL8hpWicAt2JexNRrd_0D4",
-  authDomain: "webrtc-fca13.firebaseapp.com",
-  databaseURL: "https://webrtc-fca13-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "webrtc-fca13",
-  storageBucket: "webrtc-fca13.appspot.com",
-  messagingSenderId: "962235055187",
-  appId: "1:962235055187:web:cb4d4f8b2f430a14245aa6",
-  measurementId: "G-F7XB5NDGVG"
+  /*your firebase config*/
 };
 
 const servers = {
