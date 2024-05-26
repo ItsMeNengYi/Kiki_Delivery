@@ -11,3 +11,7 @@ webRTC.initializeConnection();
 server.initialise();
 
 webRTC.setOnDataCallback((data) => server.sendData(data));
+
+document.getElementById("pythonServerDisconnect").onclick = async () => {
+    server.sendData("end")
+};
