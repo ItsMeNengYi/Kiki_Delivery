@@ -32,6 +32,4 @@ export default class Socket {
             console.log("Error, socket is not initialised");
         }
     }
-
-
 }

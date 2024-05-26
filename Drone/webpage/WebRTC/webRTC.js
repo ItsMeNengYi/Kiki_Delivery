@@ -104,7 +104,7 @@ export default class WebRTC {
 
     this.pc.onconnectionstatechange = async (event) => {
       if (this.pc.connectionState === "disconnected") {
-        await firestore.collection("calls").doc("DroneConnection").delete();
+        await this.callDoc.delete();
       }
     };
   }
