@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import RegisterSuccessScreen from './screens/RegisterSuccessScreen';
 import { initializeApp } from 'firebase/app';
 
 // Initialize Firebase
@@ -32,6 +34,8 @@ function App() {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="RegisterSuccess" component={RegisterSuccessScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
