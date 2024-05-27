@@ -13,7 +13,8 @@ const LoginScreen = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
-        navigation.navigate("Home");
+        navigation.replace("Home");
+        {/* replace doesnt allow a back button on the status bar */}
       }
     })
 
