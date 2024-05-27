@@ -14,7 +14,7 @@ const LoginScreen = () => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         navigation.replace("Home");
-        {/* replace doesnt allow a back button on the status bar */}
+        {/*replace doesnt allow a back button on the status bar*/}
       }
     })
 
