@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [password2, setPassword2] = useState('')
 
   const auth = getAuth();
   const navigation = useNavigation();
@@ -22,19 +23,14 @@ const LoginScreen = () => {
   }, [])
   
   const handleSignUp = () => {
-    navigation.navigate("Register");
-  }
-
-  const handleLogin = () => {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
+    createUserWithEmailAndPassword(auth, email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
-        console.log("Logged in with: ", user.email);
+        console.log("Signed up with: ", user.email);
       })
       .catch(error => alert(error.message));
   }
-
+  
   return (
     <KeyboardAvoidingView
         style={styles.container}
@@ -51,6 +47,13 @@ const LoginScreen = () => {
           placeholder='Password'
           value={password}
           onChangeText={text => setPassword(text)}
+          style={styles.input}
+          secureTextEntry
+        />
+        <TextInput
+          placeholder='Password Again'
+          value={password2}
+          onChangeText={text => setPassword2(text)}
           style={styles.input}
           secureTextEntry
         />
