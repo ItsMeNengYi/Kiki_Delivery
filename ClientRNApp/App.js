@@ -8,6 +8,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import RegisterSuccessScreen from './screens/RegisterSuccessScreen';
 import PasswordResetScreen from './screens/PasswordResetScreen';
 import PasswordResetSuccessScreen from './screens/PasswordResetSuccessScreen';
+import EmailNotVerfiedScreen from './screens/EmailNotVerifiedScreen';
 import { initializeApp } from 'firebase/app';
 
 // Initialize Firebase
@@ -40,6 +41,7 @@ function App() {
         <Stack.Screen options={{ headerShown: false }} name="RegisterSuccess" component={RegisterSuccessScreen} />
         <Stack.Screen options={{ headerTitle: 'Password Reset' }} name="PasswordReset" component={PasswordResetScreen} />
         <Stack.Screen options={{ headerShown: false }} name="PasswordResetSuccess" component={PasswordResetSuccessScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="EmailNotVerified" component={EmailNotVerfiedScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

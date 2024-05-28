@@ -1,6 +1,6 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { useNavigation } from '@react-navigation/native'
 
 
@@ -20,15 +20,21 @@ const RegisterScreen = () => {
         .then(userCredentials => {
           const user = userCredentials.user;
           console.log("Signed up with: ", user.email);
-        })
-        .catch(error => alert(error.message))
-        .then(() => {
-          signOut(auth);
           navigation.replace('RegisterSuccess');
           navigation.reset({
             index: 0,
             routes: [{name: 'RegisterSuccess'}]
           });
+          signOut(auth);
+          sendEmailVerification(user)
+            .then(() => {
+            })
+            .catch(error => alert(error.message))
+        })
+        .catch(error => alert(error.message))
+        .then(() => {
+          
+          
         })
     } else {
       alert('Passwords must match')
