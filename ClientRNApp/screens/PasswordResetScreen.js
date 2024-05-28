@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswo
 import { useNavigation } from '@react-navigation/native'
 
 
-const RegisterScreen = () => {
+const PasswordResetScreen = () => {
   const [email, setEmail] = useState('')
 
   const auth = getAuth();
@@ -47,7 +47,7 @@ const RegisterScreen = () => {
   )
 }
 
-export default RegisterScreen 
+export default PasswordResetScreen 
 
 const styles = StyleSheet.create({
   container: {

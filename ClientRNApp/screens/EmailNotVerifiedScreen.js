@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigation } from '@react-navigation/native'
 
-const PasswordResetSuccessScreen = () => {
+const EmailNotVerifiedScreen = () => {
   const auth = getAuth();
   const navigation = useNavigation();
 
@@ -12,13 +12,12 @@ const PasswordResetSuccessScreen = () => {
         style={styles.container}
         behavior='padding'
     >
-      <Text style={styles.title}>Password Reset Email Sent</Text>
-      <Text style={styles.statusText}>Follow link in email to reset password</Text>
+      <Text style={styles.title}>Email not Verified</Text>
+      <Text style={styles.statusText}>Please check verification email before login</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            auth.signOut();
-            navigation.replace('Login');
+            navigation.replace('Login')
           }}
           style={styles.button}
         >
@@ -29,7 +28,7 @@ const PasswordResetSuccessScreen = () => {
   )
 }
 
-export default PasswordResetSuccessScreen 
+export default EmailNotVerifiedScreen 
 
 const styles = StyleSheet.create({
   container: {
