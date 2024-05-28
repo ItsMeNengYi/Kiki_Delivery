@@ -12,9 +12,16 @@ const LoginScreen = () => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
+      if (user.emailVerified) {
         navigation.replace("Home");
         {/*replace doesnt allow a back button on the status bar*/}
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Home'}]
+        });
+      } else {
+        auth.signOut();
+        navigation.replace("EmailNotVerified");
       }
     })
 
