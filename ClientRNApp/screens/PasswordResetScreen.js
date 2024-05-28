@@ -1,6 +1,6 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { useNavigation } from '@react-navigation/native'
 
 
@@ -11,7 +11,8 @@ const RegisterScreen = () => {
   const navigation = useNavigation();
   
   const handlePasswordReset = () => {
-    
+    sendPasswordResetEmail(auth, email)
+      .catch(error => alert(error.message))
   }
 
   return (
