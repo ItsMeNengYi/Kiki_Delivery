@@ -1,6 +1,6 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigation } from '@react-navigation/native'
 
 const LoginScreen = () => {
@@ -20,6 +20,10 @@ const LoginScreen = () => {
 
     return unsubscribe;
   }, [])
+
+  const handlePasswordReset = () => {
+    navigation.navigate("PasswordReset");
+  }
   
   const handleSignUp = () => {
     navigation.navigate("Register");
@@ -54,6 +58,13 @@ const LoginScreen = () => {
           style={styles.input}
           secureTextEntry
         />
+
+        <TouchableOpacity
+          onPress={handlePasswordReset}
+          style={styles.forgotPasswordButton}
+        >
+          <Text style={styles.forgotPasswordButtonText}>Forgot Password?</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -99,6 +110,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 40
   },
+
+  forgotPasswordButton: {
+    alignItems: 'center',
+    marginTop: 15
+  },
+  forgotPasswordButtonText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: 'dimgrey'
+  },
+
   button: {
     backgroundColor: 'coral',
     width: '100%',
