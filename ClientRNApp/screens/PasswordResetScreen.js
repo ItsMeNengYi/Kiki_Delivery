@@ -11,8 +11,12 @@ const RegisterScreen = () => {
   const navigation = useNavigation();
   
   const handlePasswordReset = () => {
-    sendPasswordResetEmail(auth, email)
-      .catch(error => alert(error.message))
+    if (email == "") {
+      alert('Email cannot be empty!')
+    } else {
+      sendPasswordResetEmail(auth, email)
+        .then(navigation.replace("PasswordResetSuccess"))
+    }
   }
 
   return (
