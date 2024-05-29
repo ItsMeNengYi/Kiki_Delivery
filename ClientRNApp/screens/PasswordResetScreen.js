@@ -1,13 +1,14 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { FIREBASE_AUTH } from '../firebaseConfig.js'
 import { useNavigation } from '@react-navigation/native'
 
 
 const PasswordResetScreen = () => {
   const [email, setEmail] = useState('')
 
-  const auth = getAuth();
+  const auth = FIREBASE_AUTH;
   const navigation = useNavigation();
   
   const handlePasswordReset = () => {

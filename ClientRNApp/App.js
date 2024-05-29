@@ -9,25 +9,6 @@ import RegisterSuccessScreen from './screens/RegisterSuccessScreen';
 import PasswordResetScreen from './screens/PasswordResetScreen';
 import PasswordResetSuccessScreen from './screens/PasswordResetSuccessScreen';
 import EmailNotVerfiedScreen from './screens/EmailNotVerifiedScreen';
-import { initializeApp } from 'firebase/app';
-
-// Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyArva7PR9W7Sl6O03H3JvGztURqzKDMPd8",
-  authDomain: "kikisdelivery-44503.firebaseapp.com",
-  databaseURL: '',
-  projectId: "kikisdelivery-44503",
-  storageBucket: "kikisdelivery-44503.appspot.com",
-  messagingSenderId: "61734388843",
-  appId: "1:61734388843:web:101c249fa585e8b0319d2e",
-  measurementId: "G-90K7ETW99H"
-};
-
-// For more information on how to access Firebase in your project,
-// see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
-
-// Initialize Firebase Authentication and get a reference to the service
-const app = initializeApp(firebaseConfig);
 
 const Stack = createNativeStackNavigator();
 
