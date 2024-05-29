@@ -1,6 +1,5 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig.js'
 import { collection, doc, setDoc } from "firebase/firestore"; 
 import { useNavigation } from '@react-navigation/native'
@@ -18,6 +17,7 @@ const NewUserDataScreen = () => {
     } else {
       const userInfoRef = collection(FIRESTORE_DB, "user_data")
       setDoc(doc(userInfoRef, auth.currentUser.uid), {
+        email: auth.currentUser.email,
         username: username,
         time: 0
       })
