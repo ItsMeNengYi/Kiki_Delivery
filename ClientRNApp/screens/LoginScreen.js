@@ -1,7 +1,8 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth'
-import { FIREBASE_AUTH } from '../firebaseConfig.js'
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig.js'
+import { doc, getDoc } from "firebase/firestore";
 import { useNavigation } from '@react-navigation/native'
 
 const LoginScreen = () => {
@@ -9,17 +10,29 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('')
 
   const auth = FIREBASE_AUTH;
+  const db = FIRESTORE_DB
   const navigation = useNavigation();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user.emailVerified) {
-        navigation.replace("Home");
-        {/*replace doesnt allow a back button on the status bar*/}
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Home'}]
-        });
+        userDataExists()
+          .then(exists => {
+            if (exists) {
+              navigation.replace("Home");
+              {/*replace doesnt allow a back button on the status bar*/}
+              navigation.reset({
+                index: 0,
+                routes: [{name: 'Home'}]
+              });
+            } else {
+              navigation.replace("NewUserInfo");
+              navigation.reset({
+                index: 0,
+                routes: [{name: 'NewUserInfo'}]
+              });
+            }
+          })
       } else {
         auth.signOut();
         navigation.replace("EmailNotVerified");
@@ -35,6 +48,18 @@ const LoginScreen = () => {
   
   const handleSignUp = () => {
     navigation.navigate("Register");
+  }
+
+  const userDataExists = async () => {
+    const docRef = doc(db, "user_data", auth.currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      console.log("Document data:", docSnap.data());
+    } else {
+      // docSnap.data() will be undefined in this case
+      console.log("No such document!");
+    }
+    return docSnap.exists();
   }
 
   const handleLogin = () => {
