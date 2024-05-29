@@ -30,22 +30,56 @@ const HomeScreen = () => {
       .catch(error => alert(error.message))
   }
 
+  const handleRefresh = () => {
+    navigation.replace('Home')
+  }
+
+  const handlePurchaseTime = () => {
+    const userDataRef = collection(FIRESTORE_DB, "user_data");
+    setDoc(doc(userDataRef, auth.currentUser.uid), {
+      email: email,
+      username: username,
+      time: time + 30
+    })
+      .then(() => {
+        getDoc(docRef)
+        .then(docSnap => {
+          setTime(docSnap.data().time);
+          alert('30 minutes added to drone usage limit!\n(DEV MODE: no payment implemented yet')
+        });
+      })
+      .catch(error => alert(error.message));
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Drone Rental</Text> 
+      <TouchableOpacity 
+        onPress={handleRefresh}
+        style={styles.refreshButton}
+      >
+        <Text style={styles.refreshButtonText}>Refresh</Text>
+      </TouchableOpacity>
       <View style={styles.infoContainer}>
+        <Text style={styles.infoTitleText}>Current User Info</Text> 
         <Text style={styles.infoText}>Email: {email}</Text> 
         <Text style={styles.infoText}>Username: {username}</Text>
       </View>
       <View style={styles.timeContainer}>
         <Text style={styles.timeText}>Drone Time Remaining:</Text>
         <Text style={styles.timeText}>{time} minutes</Text>
+        <TouchableOpacity
+          onPress={handlePurchaseTime}
+          style={styles.timeButton}
+        >
+          <Text style={styles.buttonText}>Purchase Time</Text>
+        </TouchableOpacity>
       </View>
       <TouchableOpacity 
         onPress={handleSignOut}
-        style={styles.button}
+        style={styles.logoutButton}
       >
-        <Text style={styles.buttonText}>Log Out</Text>
+        <Text style={styles.buttonOutlineText}>Log Out</Text>
       </TouchableOpacity>
     </View>
   )
@@ -57,7 +91,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 27,
     fontWeight: '500',
-    paddingBottom: 20
+    marginTop: 20,
+    marginBottom: 10
+  },
+  infoTitleText: {
+    fontSize: 17,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: 10
   },
   infoText: {
     fontSize: 17
@@ -73,23 +114,54 @@ const styles = StyleSheet.create({
   infoContainer: {
     justifyContent: 'center',
     alignItems: 'left',
-    marginTop: 20
+    margin: 20
   },
   timeContainer: {
+    flex: 1,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 40
   },
-  button: {
+  timeButton: {
     backgroundColor: 'coral',
     width: '60%',
+    margin: 25,
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  refreshButton: {
+    backgroundColor: 'white',
+    width: '60%',
+    padding: 5,
+    borderRadius: 10,
+    borderColor: 'coral',
+    alignItems: 'center',
+    borderWidth: 2
+  },
+  logoutButton: {
+    backgroundColor: 'white',
+    width: '60%',
+    margin: 40,
     padding: 10,
     borderRadius: 10,
+    borderColor: 'coral',
     alignItems: 'center',
-    marginTop: 40
+    borderWidth: 2
   },
   buttonText: {
     color: 'white',
+    fontWeight: '700',
+    fontSize: 16
+  },
+  refreshButtonText: {
+    color: 'coral',
+    fontWeight: '700',
+    fontSize: 14
+  },
+  buttonOutlineText: {
+    color: 'coral',
     fontWeight: '700',
     fontSize: 16
   }

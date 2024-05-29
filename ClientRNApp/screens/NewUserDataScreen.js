@@ -15,8 +15,8 @@ const NewUserDataScreen = () => {
     if (username == "") {
       alert('Username cannot be empty!')
     } else {
-      const userInfoRef = collection(FIRESTORE_DB, "user_data")
-      setDoc(doc(userInfoRef, auth.currentUser.uid), {
+      const userDataRef = collection(FIRESTORE_DB, "user_data")
+      setDoc(doc(userDataRef, auth.currentUser.uid), {
         email: auth.currentUser.email,
         username: username,
         time: 0
