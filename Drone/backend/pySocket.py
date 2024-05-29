@@ -25,7 +25,6 @@ class PySocket():
     def on_message(self, message):
         try:
             messageInJsonFormat = json.loads(message)
-            print(message)
             if (self.droneOnMessageCallback != None and message != ""):
                 self.droneOnMessageCallback(messageInJsonFormat)
         except ValueError:
