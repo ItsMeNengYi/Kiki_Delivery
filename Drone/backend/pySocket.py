@@ -2,7 +2,6 @@ import socket
 import base64
 import hashlib
 import struct
-import threading
 
 import json
 
@@ -15,6 +14,8 @@ class PySocket():
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn = None
         self.disconnectMessage = "end"
+        self.isConnected = False
+        self.serverIsClosed = False
 
         self.droneOnMessageCallback = None
 
@@ -24,13 +25,16 @@ class PySocket():
     def on_message(self, message):
         try:
             messageInJsonFormat = json.loads(message)
+            print(message)
             if (self.droneOnMessageCallback != None and message != ""):
                 self.droneOnMessageCallback(messageInJsonFormat)
         except ValueError:
             print("Data received not for Drone: " + message)
     
     def on_disconnect(self):
+        self.isConnected = False
         print("Disconnected from web")
+        self.close_server()
 
     def set_drone_on_message_callback(self, function):
         self.droneOnMessageCallback = function
@@ -41,30 +45,36 @@ class PySocket():
         print(f"WebSocket server is listening on ws://{HOST}:{PORT}")
         self.conn, _ = self.server_socket.accept()
 
-        # TODO: handling exception raise by thread
-        threading.Thread(target=self.handle_client).start()
+    
+    def update(self):
+        if not self.isConnected:
+            self.perform_handshake()
+        else:
+            self.handle_client()
 
     def close_server(self):
         print("Server closed")
         self.server_socket.close()
+        self.serverIsClosed = True
 
     # Function to handle client communication
     def handle_client(self):
-        self.perform_handshake()
-        while True:
-            data = self.conn.recv(1024)
-            if not data:
-                break
-            try:
-                message = self.decode_websocket_frame(data)
-                if (message == self.disconnectMessage):
-                    self.on_disconnect()
-                    break
-                self.on_message(message)
-            except (UnicodeDecodeError, ValueError) as e:
-                self.send_message_to_web("0")
-                print(f"Error decoding message: {e}")
+        data = self.conn.recv(1024)
+        if not data:
+            return
+        try:
+            message = self.decode_websocket_frame(data)
+            if (message == self.disconnectMessage):
+                self.on_disconnect()
+                return
+            self.on_message(message)
+        except (UnicodeDecodeError, ValueError) as e:
+            self.send_message_to_web("0")
+            print(f"Error decoding message: {e}")
 
+
+    def close_server(self):
+        print("Server Closing...")
         self.conn.close()
 
     # Function to handle the WebSocket handshake
@@ -83,6 +93,7 @@ class PySocket():
         )
         self.conn.send(handshake_response.encode('utf-8'))
         print("Handshake complete")
+        self.isConnected = True
 
     # Function to parse headers from the request
     def parse_headers(self, request):

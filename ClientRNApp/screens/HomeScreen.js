@@ -74,6 +74,7 @@ const HomeScreen = () => {
         >
           <Text style={styles.buttonText}>Purchase Time</Text>
         </TouchableOpacity>
+        <a href="http://localhost:3000">To Control Page</a>
       </View>
       <TouchableOpacity 
         onPress={handleSignOut}
