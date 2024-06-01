@@ -5,14 +5,15 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Drone</title>
+
   </head>
   <body>
     <h2>Drone</h2>
     <div class="videos">
-      <!-- <span>
+      <span>
         <h3>Local Stream</h3>
         <video id="webcamVideo" autoplay playsinline></video>
-      </span> -->
+      </span> 
       <span>
         <h3>Remote Stream</h3>
         <video id="remoteVideo" autoplay playsinline></video>
@@ -21,8 +22,61 @@
 
     </div>
     <button id="pythonServerDisconnect">Disconnect python server</button>
-
     <script type="module" src="/main.js"></script>
 
   </body>
-</html>
+</html> 
+<!-- 
+Copyright 2023 The MediaPipe Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. 
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Face Landmarker</title>
+
+</head>
+<body>
+  <h1>Face landmark detection using the MediaPipe FaceLandmarker task</h1>
+
+  <section id="demos" class="invisible">
+    <h2>Demo: Detecting Images</h2>
+    <p><b>Click on an image below</b> to see the key landmarks of the face.</p>
+
+    <div class="detectOnClick">
+      <img src="https://storage.googleapis.com/mediapipe-assets/portrait.jpg" width="100%" crossorigin="anonymous" title="Click to get detection!" />
+    </div>
+    <div class="blend-shapes">
+      <ul class="blend-shapes-list" id="image-blend-shapes"></ul>
+    </div>
+
+    <div id="liveView" class="videoView">
+      <button id="webcamButton" class="mdc-button mdc-button--raised">
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__label">ENABLE WEBCAM</span>
+      </button>
+      <div style="position: relative;">
+        <video id="webcam" style="position: abso" autoplay playsinline></video>
+        <canvas class="output_canvas" id="output_canvas" style="position: absolute; left: 0px; top: 0px;"></canvas>
+      </div>
+    </div>
+    <div class="blend-shapes">
+      <ul class="blend-shapes-list" id="video-blend-shapes"></ul>
+    </div>
+  </section>
+  <script type="module" src="/testing.ts"></script>
+</body>
+</html> -->

@@ -1,4 +1,3 @@
-
 export default class Socket {
     constructor() {
         this.client = new WebSocket('ws://localhost:8765');
