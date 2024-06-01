@@ -3,6 +3,8 @@ import json
 import math
 import gpiod
 
+from piScreen import PiScreen
+
 from time import sleep
 
 # Pins
@@ -14,7 +16,7 @@ _RIGHT_IN2 = 15
 _RIGHT_EN = 18
 
 class DroneControl():
-    def __init__(self,):
+    def __init__(self):
         self.dataFromClient = None
         self.data = {
                 "message": "none",
@@ -28,8 +30,11 @@ class DroneControl():
                 }
             }
 
+        # Screens
+        self.textScreen = None
+        
         # Chip
-        self._chip = gpiod.Chip('gpiochip4')
+        self._chip = gpiod.Chip('/dev/gpiochip4')
 
         # gpio lines
         self._line_left_en = self._chip.get_line(_LEFT_EN)
@@ -60,6 +65,8 @@ class DroneControl():
         self.set_value_all_lines(0)
     
     def on_message_callback(self, data):
+        if self.textScreen != None and data["message"] != self.data["message"]:
+            self.textScreen.add_message(data["message"])
         self.data = data
         print("Drone received" + json.dumps(data))
 
@@ -123,4 +130,6 @@ class DroneControl():
 
         self.update_lines_value()
 
+    def addTextScreen(self, screen):
+        self.textScreen = screen
 
