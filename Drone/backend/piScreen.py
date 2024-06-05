@@ -53,8 +53,3 @@ class PiScreen():
                 draw.line((0, index * CHAR_HEIGHT, 130, index * CHAR_HEIGHT), fill="white", width=1)
             draw.text((0, index * CHAR_HEIGHT + delta), self.messages[index], fill="white")
 
-
-# screen = PiScreen()
-# screen.add_message("hello")
-# screen.update()
-# sleep(10)
