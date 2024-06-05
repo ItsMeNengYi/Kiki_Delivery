@@ -9,12 +9,7 @@ let _droneControl = {
     movement : {
         x : 0,
         y : 0
-    },
-    inPlaceRot : {
-        left : false,
-        right : false
-    },
-    
+    }  
 }
 
 
@@ -30,8 +25,8 @@ document.getElementById('send').onclick = async ()=> {
     webrtc.sendToDrone(_droneControl);  
 };
 
-const joystickContainer = document.querySelector('.joystick');
-const joystick = new VirtualJoystick(joystickContainer, {
+const movementJoystickContainer = document.querySelector('.movementJoystick');
+const movementJoystick = new VirtualJoystick(movementJoystickContainer, {
     width: 100,
     height: 100,
     color: 'gray',
@@ -40,7 +35,23 @@ const joystick = new VirtualJoystick(joystickContainer, {
     onChange: function(delta) {
         const x = Math.round(delta.x*100)/100;
         const y = Math.round(delta.y*100)/100; 
-        document.getElementById('joystick-debug').textContent = "x:" + String(x) + " y:" + String(y);
+        _droneControl.movement.x = x;
+        _droneControl.movement.y = y;
+        webrtc.sendToDrone(_droneControl);  
+    }
+}
+);
+
+const cameraJoystickContainer = document.querySelector('.cameraJoystick');
+const cameraJoystick = new VirtualJoystick(cameraJoystickContainer, {
+    width: 100,
+    height: 100,
+    color: 'gray',
+    handleColor: 'white',
+    handleRadius: 30,
+    onChange: function(delta) {
+        const x = Math.round(delta.x*100)/100;
+        const y = Math.round(delta.y*100)/100; 
         _droneControl.movement.x = x;
         _droneControl.movement.y = y;
         webrtc.sendToDrone(_droneControl);  

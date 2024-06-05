@@ -8,12 +8,12 @@ from piScreen import PiScreen
 from time import sleep
 
 # Pins
-_LEFT_IN3 = 6
-_LEFT_IN4 = 13
-_LEFT_EN = 19
-_RIGHT_IN1 = 14
-_RIGHT_IN2 = 15
-_RIGHT_EN = 18
+_LEFT_IN3 = 13
+_LEFT_IN4 = 19
+_LEFT_EN = 26
+_RIGHT_IN1 = 16
+_RIGHT_IN2 = 20
+_RIGHT_EN = 21
 
 class DroneControl():
     def __init__(self):
@@ -23,10 +23,6 @@ class DroneControl():
                 "movement" : {
                     "x" : 0,
                     "y" : 0
-                },
-                "inPlaceRot" : {
-                    "left" : "false",
-                    "right" : "false"
                 }
             }
 
@@ -34,7 +30,7 @@ class DroneControl():
         self.textScreen = None
         
         # Chip
-        self._chip = gpiod.Chip('/dev/gpiochip4')
+        self._chip = gpiod.Chip('gpiochip4')
 
         # gpio lines
         self._line_left_en = self._chip.get_line(_LEFT_EN)

@@ -13,6 +13,8 @@ body {
 .column {
   float: left;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .left, .right {
@@ -38,6 +40,23 @@ body {
 }
 
 /* Right panel styling */
+.top-right {
+  height: 33.33%;
+}
+
+.middle-right {
+  height: 33.33%;
+}
+
 .bottom-right {
-  max-height: 60%;
+  height: 33.33%;
+}
+
+/* Buttons for scissor lift and inplace rotation */
+
+.buttons-column {
+  float:left;
+  width:33.33%;
+  height:100%;
+  align-items: center;
 }
