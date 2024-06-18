@@ -13,13 +13,17 @@ const HomeScreen = () => {
   const [email, setEmail] = useState('')
   const [username, setUsername] = useState('')
   const [time, setTime] = useState(0)
-  getDoc(docRef)
-    .then(docSnap => {
-      console.log(docSnap.data());
-      setEmail(docSnap.data().email);
-      setUsername(docSnap.data().username);
-      setTime(docSnap.data().time);
-    });
+
+  useEffect(() =>
+    {
+      getDoc(docRef)
+      .then(docSnap => {
+        console.log(docSnap.data());
+        setEmail(docSnap.data().email);
+        setUsername(docSnap.data().username);
+        setTime(docSnap.data().time);
+      });
+    }, [])
 
   const handleSignOut = () => {
     auth
@@ -34,6 +38,10 @@ const HomeScreen = () => {
     navigation.replace('Home')
   }
 
+  const handleProfile = () => {
+    navigation.navigate('Profile')
+  }
+
   const handlePurchaseTime = () => {
     const userDataRef = collection(FIRESTORE_DB, "user_data");
     setDoc(doc(userDataRef, auth.currentUser.uid), {
@@ -45,7 +53,7 @@ const HomeScreen = () => {
         getDoc(docRef)
         .then(docSnap => {
           setTime(docSnap.data().time);
-          alert('30 minutes added to drone usage limit!\n(DEV MODE: no payment implemented yet')
+          alert('30 minutes added to drone usage limit!\n(DEV MODE: no payment implemented yet)')
         });
       })
       .catch(error => alert(error.message));
@@ -74,8 +82,14 @@ const HomeScreen = () => {
         >
           <Text style={styles.buttonText}>Purchase Time</Text>
         </TouchableOpacity>
-        <a href="http://localhost:3000">To Control Page</a>
+
       </View>
+      <TouchableOpacity 
+        onPress={handleProfile}
+        style={styles.profileButton}
+      >
+        <Text style={styles.buttonText}>Profile Settings</Text>
+      </TouchableOpacity>
       <TouchableOpacity 
         onPress={handleSignOut}
         style={styles.logoutButton}
@@ -141,10 +155,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2
   },
+  profileButton: {
+    backgroundColor: 'coral',
+    width: '60%',
+    marginBottom: 10,
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 10
+  },
   logoutButton: {
     backgroundColor: 'white',
     width: '60%',
-    margin: 40,
+    marginBottom: 40,
     padding: 10,
     borderRadius: 10,
     borderColor: 'coral',
