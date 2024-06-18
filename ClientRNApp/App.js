@@ -10,6 +10,7 @@ import PasswordResetScreen from './screens/PasswordResetScreen';
 import PasswordResetSuccessScreen from './screens/PasswordResetSuccessScreen';
 import EmailNotVerfiedScreen from './screens/EmailNotVerifiedScreen';
 import NewUserInfo from './screens/NewUserDataScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ function App() {
         <Stack.Screen options={{ headerShown: false }} name="PasswordResetSuccess" component={PasswordResetSuccessScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EmailNotVerified" component={EmailNotVerfiedScreen} />
         <Stack.Screen options={{ headerShown: false }} name="NewUserInfo" component={NewUserInfo} />
+        <Stack.Screen options={{ headerTitle: 'Profile' }} name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
