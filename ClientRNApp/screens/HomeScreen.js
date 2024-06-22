@@ -1,8 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig.js'
-import { collection, doc, setDoc, getDoc } from "firebase/firestore"; 
+import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore"; 
 import { useNavigation } from '@react-navigation/native';
+
+const ControlsURL = "http://127.0.0.1:5500/Client/index.html"
 
 const HomeScreen = () => {
   const auth = FIREBASE_AUTH;
@@ -22,7 +24,8 @@ const HomeScreen = () => {
         setEmail(docSnap.data().email);
         setUsername(docSnap.data().username);
         setTime(docSnap.data().time);
-      });
+      })
+      .catch(error => alert(error.message));
     }, [])
 
   const handleSignOut = () => {
@@ -59,6 +62,33 @@ const HomeScreen = () => {
       .catch(error => alert(error.message));
   }
 
+  const handleOpenControls = () => {
+    
+    //handle access code generation and update to firebase
+    var currentCode = 0
+    var newCode = Math.floor(Math.random() * 1000000)
+    const userDataRef = collection(FIRESTORE_DB, "user_data")
+
+    getDoc(docRef)
+      .then(docSnap => {
+        console.log(docSnap.data());
+        currentCode = docSnap.data().curr_access_code;
+        updateDoc(doc(userDataRef, auth.currentUser.uid), {
+            prev_access_code: currentCode,
+            curr_access_code: newCode
+          })
+          .then(() => {
+            //handle opening control interface url in browser
+            Linking.canOpenURL(ControlsURL)
+              .then((supported) => {
+                supported && Linking.openURL(ControlsURL);
+              }).catch(error => alert(error.message));
+          })
+          .catch(error => alert(error.message));
+      })
+      .catch(error => alert(error.message));
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Drone Rental</Text> 
@@ -80,10 +110,16 @@ const HomeScreen = () => {
           onPress={handlePurchaseTime}
           style={styles.timeButton}
         >
-          <Text style={styles.buttonText}>Purchase Time</Text>
+          <Text style={styles.buttonOutlineText}>Purchase Time</Text>
         </TouchableOpacity>
-
+        <TouchableOpacity
+          style={styles.controlsButton}
+          onPress={handleOpenControls}
+        >
+          <Text style={styles.buttonText}>To Control Interface</Text>
+        </TouchableOpacity>
       </View>
+
       <TouchableOpacity 
         onPress={handleProfile}
         style={styles.profileButton}
@@ -136,13 +172,23 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40
   },
   timeButton: {
+    backgroundColor: 'white',
+    borderColor: 'coral',
+    borderWidth: 2,
+    width: '60%',
+    marginTop: 10,
+    padding: 5,
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  controlsButton: {
     backgroundColor: 'coral',
     width: '60%',
-    margin: 25,
-    padding: 15,
+    marginTop: 5,
+    marginBottom: 40,
+    padding: 20,
     borderRadius: 10,
     alignItems: 'center'
   },
