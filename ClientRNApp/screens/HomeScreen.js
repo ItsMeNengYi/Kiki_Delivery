@@ -56,13 +56,18 @@ const HomeScreen = () => {
         getDoc(docRef)
         .then(docSnap => {
           setTime(docSnap.data().time);
-          alert('30 minutes added to drone usage limit!\n(DEV MODE: no payment implemented yet)')
+          alert('30 minutes added to drone usage limit!\n(DEV MODE: no payment implemented yet)');
         });
       })
       .catch(error => alert(error.message));
   }
 
   const handleOpenControls = () => {
+    //cannot start controls if drone time too low
+    if (time < 30) {
+      alert('Not enough remaining drone time to use! (Must be above 30 min)')
+      return;
+    }
     
     //handle access code generation and update to firebase
     var currentCode = 0
@@ -116,7 +121,7 @@ const HomeScreen = () => {
           style={styles.controlsButton}
           onPress={handleOpenControls}
         >
-          <Text style={styles.buttonText}>To Control Interface</Text>
+          <Text style={styles.buttonText}>Access A Drone</Text>
         </TouchableOpacity>
       </View>
 
