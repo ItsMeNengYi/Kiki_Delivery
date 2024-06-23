@@ -1,0 +1,19 @@
+version: 1
+frontend:
+    phases:
+      preBuild:
+        commands:
+          # Install modules of Client control page
+          - cd Client
+          - npm install
+      build:
+        commands:
+          # Build Client control page
+          - npm run build
+    artifacts:
+        baseDirectory: Client/dist
+        files:
+            - '**/*'
+    cache:
+        paths:
+          - Client/node_modules/**/*
