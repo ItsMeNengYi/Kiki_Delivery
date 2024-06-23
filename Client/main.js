@@ -59,3 +59,13 @@ const cameraJoystick = new VirtualJoystick(cameraJoystickContainer, {
 }
 );
 
+function getQueryParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+// Get the 'name' and 'key' query parameters
+const userName = getQueryParameter('name');
+const userKey = getQueryParameter('key');
+
+console.log(userName + userKey)
