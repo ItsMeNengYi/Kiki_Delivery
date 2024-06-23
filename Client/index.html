@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <script src='https://kit.fontawesome.com/0d5f0667f9.js' crossorigin='anonymous'></script>
     <title>Drone Control</title>
   </head>
   <body>
@@ -20,7 +20,7 @@
           <button id="send" disabled>Send to Drone</button> 
         </div>
         <div class="column-left bottom-left" >
-          <div class="movementJoystick" style="height:100%; justify-content: center;display: flex;"></div>
+          <div class="container movementJoystick" style="height:100%; justify-content: center;display: flex;"></div>
         </div>
       </div>
 
@@ -33,19 +33,18 @@
           <video style=" object-fit: contain; margin: 0; width: 100%; height: 90%;" id="webcamVideo" autoplay playsinline></video>
         </div >
         <div class="column-right middle-right" >
-            <div class="buttons-column left-button">
-              <i class='fas fa-angle-right'></i>
+            <div class="container buttons-column left-button" >
+              <button class='button inplace-rot-left fas fa-caret-left' ></button>
             </div>
             <div class="buttons-column middle-buttons" style="background-color:#aaa;">
-              <button id="button lift-top" ></button>
-              <button id="button lift-bot" ></button>
+              
             </div>
-            <div class="buttons-column right-button">
-              <button id="button rot-right" ></button>
+            <div class="container buttons-column right-button" >
+              <button class='button inplace-rot-right fas fa-caret-right'></button>
             </div>
         </div >
         <div class="column-right bottom-right">
-            <div class="cameraJoystick" style="height:100%; justify-content: center; display: flex;"></div>
+            <div class="container cameraJoystick" style="height:100%; justify-content: center; display: flex;"></div>
         </div>
       </div>
 

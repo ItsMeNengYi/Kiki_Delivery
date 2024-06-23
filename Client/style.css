@@ -13,8 +13,6 @@ body {
 .column {
   float: left;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 .left, .right {
@@ -59,4 +57,16 @@ body {
   width:33.33%;
   height:100%;
   align-items: center;
+}
+
+.container  {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  width: 70%;
+  aspect-ratio: 1.5;
+  font-size:x-large;
 }
