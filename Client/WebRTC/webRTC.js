@@ -14,6 +14,7 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APPID,
     measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENTID
 };
+
 const servers = {
   iceServers: [
     {
