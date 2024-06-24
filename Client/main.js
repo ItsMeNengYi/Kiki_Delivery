@@ -45,29 +45,38 @@ const userEmail = getQueryParameter('email');
 const userKey = getQueryParameter('key');
 let userExist = false
 let access = false
-const accessCodeDoc = (await database.collection('access_code').doc('00001').get());
-const accessCode = accessCodeDoc.data().curr_access_code;
-const userSnapshot = (await database.collection('user_data').where("email", "==", userEmail).get());
 
-if (!userSnapshot.empty) {
-    const user = userSnapshot.docs[0].data();
-    userExist = true
-  } else {
-    console.log("No such user!");
-}
+async function userAuthentication() {
+    try { 
+        const accessCodeDoc = (await database.collection('access_code').doc('00001').get());
+        const accessCode = accessCodeDoc.data().curr_access_code;
+        const userSnapshot = (await database.collection('user_data').where("email", "==", userEmail).get());
 
-if (accessCode === userKey && userExist) {
-    console.log("access granted!")
-    access = true
-    connectButton.style.backgroundColor = 'green';
-    connectButton.textContent = 'Connect to Drone';
-    connectButton.onclick = () => webrtc.initializeConnection();
-} else {
-    console.log("access failed");
-    connectButton.style.backgroundColor = 'red';
-    connectButton.textContent = 'Authentication Failed';
-}
+        if (!userSnapshot.empty) {
+            const user = userSnapshot.docs[0].data();
+            userExist = true
+        } else {
+            console.log("No such user!");
+        }
 
+        if (accessCode === userKey && userExist) {
+            console.log("access granted!")
+            access = true
+            connectButton.style.backgroundColor = 'green';
+            connectButton.textContent = 'Connect to Drone';
+            connectButton.onclick = () => webrtc.initializeConnection();
+        } else {
+            console.log("access failed");
+            connectButton.style.backgroundColor = 'red';
+            connectButton.textContent = 'Authentication Failed';
+        }
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
+};
+userAuthentication();
 
 
 document.getElementById('send').onclick = async ()=> {
