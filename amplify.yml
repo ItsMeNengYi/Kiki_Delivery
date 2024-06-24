@@ -27,20 +27,10 @@ frontend:
           - rm -r dist
 
     artifacts:
-        baseDirectory:
-          - if [ "${AWS_APP_ID}" = "your-control-app-id" ]; then echo "builds/control" ; fi
-          - if [ "${AWS_APP_ID}" = "your-home-app-id" ]; then echo "builds" ; fi
+        baseDirectory: builds
         files:
-          - '**/*'
+            - '**/*'
     cache:
         paths:
           - Client/node_modules/**/*
           - ClientRNApp/node_modules/**/*
-    redirects:
-      - source: /control/<*>  # Route all requests starting with /control to the control page
-        target: /control/<*> 
-        status: 200
-
-      - source: /              # Default route to home page
-        target: /index.html
-        status: 200
