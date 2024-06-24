@@ -13,7 +13,6 @@ frontend:
           # Create a folder "builds" to store all the build files
           - cd ..
           - mkdir -p builds/control
-          - mkdir -p builds/home
 
           # Build Client control page and copy over another folder
           - cd Client
@@ -24,7 +23,7 @@ frontend:
           # Build Client home page
           - cd ../ClientRNApp
           - npx expo export -p web
-          - cp -r dist/* ../builds/home/
+          - cp -r dist/* ../builds/
           - rm -r dist
 
     artifacts:
