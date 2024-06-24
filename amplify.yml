@@ -12,18 +12,18 @@ frontend:
         commands:
           # Create a folder "builds" to store all the build files
           - mkdir builds
-          - mkdir builds/control
+          - mkdir -p builds/control
 
           # Build Client control page and copy over another folder
           - cd ../Client
           - npm run build
-          - cp -r dist/* ../builds/control
+          - cp -r dist/* ../builds/control/
           - rm -r dist
 
           # Build Client home page
           - cd ../ClientRNApp
           - npx expo export -p web
-          - cp -r dist/* ../builds
+          - cp -r dist/* ../builds/
           - rm -r dist
 
     artifacts:
