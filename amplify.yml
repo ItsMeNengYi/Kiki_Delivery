@@ -15,7 +15,7 @@ frontend:
           - mkdir builds/control
 
           # Build Client control page and copy over another folder
-          - cd Client
+          - cd ../Client
           - npm run build
           - cp -r dist/* ../builds/control
           - rm -r dist
