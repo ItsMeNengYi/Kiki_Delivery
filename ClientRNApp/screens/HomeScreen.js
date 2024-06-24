@@ -4,7 +4,7 @@ import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig.js'
 import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore"; 
 import { useNavigation } from '@react-navigation/native';
 
-const ControlsURL = "https://main.d22eytntr7s98d.amplifyapp.com"
+const ControlsURL = "https://main.d22eytntr7s98d.amplifyapp.com/control"
 
 const HomeScreen = () => {
   const auth = FIREBASE_AUTH;
