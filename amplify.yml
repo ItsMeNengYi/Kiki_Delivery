@@ -11,7 +11,6 @@ frontend:
       build:
         commands:
           # Create a folder "builds" to store all the build files
-          - mkdir builds
           - mkdir -p builds/control
 
           # Build Client control page and copy over another folder
