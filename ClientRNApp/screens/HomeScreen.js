@@ -4,7 +4,7 @@ import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig.js'
 import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore"; 
 import { useNavigation } from '@react-navigation/native';
 
-const ControlsURL = "http://127.0.0.1:5500/Client/index.html"
+const ControlsURL = "https://main.d22eytntr7s98d.amplifyapp.com"
 
 const HomeScreen = () => {
   const auth = FIREBASE_AUTH;
@@ -70,26 +70,19 @@ const HomeScreen = () => {
     }
     
     //handle access code generation and update to firebase
-    var currentCode = 0
-    var newCode = Math.floor(Math.random() * 1000000)
-    const userDataRef = collection(FIRESTORE_DB, "user_data")
+    var currentCode = "00000000"
+    const accessCodeDocRef = doc(db, "access_code", "00001");
+    const accessCodeRef = collection(FIRESTORE_DB, "access_code")
 
-    getDoc(docRef)
+    getDoc(accessCodeDocRef)
       .then(docSnap => {
         console.log(docSnap.data());
         currentCode = docSnap.data().curr_access_code;
-        updateDoc(doc(userDataRef, auth.currentUser.uid), {
-            prev_access_code: currentCode,
-            curr_access_code: newCode
-          })
-          .then(() => {
-            //handle opening control interface url in browser
-            Linking.canOpenURL(ControlsURL)
+        var finalControlsUrl = ControlsURL + "?email=" + email + "&key=" + currentCode
+            Linking.canOpenURL(finalControlsUrl)
               .then((supported) => {
-                supported && Linking.openURL(ControlsURL);
+                supported && Linking.openURL(finalControlsUrl);
               }).catch(error => alert(error.message));
-          })
-          .catch(error => alert(error.message));
       })
       .catch(error => alert(error.message));
   }
@@ -121,7 +114,7 @@ const HomeScreen = () => {
           style={styles.controlsButton}
           onPress={handleOpenControls}
         >
-          <Text style={styles.buttonText}>Access A Drone</Text>
+          <Text style={styles.buttonText}>Access Drone 00001</Text>
         </TouchableOpacity>
       </View>
 
