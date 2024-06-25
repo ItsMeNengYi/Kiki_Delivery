@@ -29,7 +29,7 @@ frontend:
           # Move assets
           - cd ..
           - cp -r builds/control/assets/* builds/assets/*
-          - mv builds/control/index.js builds/control.js
+          - mv builds/control/index.html builds/control.html
           - rm -r builds/control
 
     artifacts:
