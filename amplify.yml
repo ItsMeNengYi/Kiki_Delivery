@@ -29,6 +29,8 @@ frontend:
           # Move assets
           - cd ..
           - cp -r builds/control/assets/* builds/assets/*
+          - cp builds/control/assets/index.js builds/assets/control.js
+          - rm -r builds/control
 
     artifacts:
         baseDirectory: builds
