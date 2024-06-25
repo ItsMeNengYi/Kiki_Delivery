@@ -26,6 +26,10 @@ frontend:
           - cp -r dist/* ../builds/
           - rm -r dist
 
+          # Move assets
+          - cd ..
+          - cp -r builds/control/assets/* builds/assets/*
+
     artifacts:
         baseDirectory: builds
         files:
