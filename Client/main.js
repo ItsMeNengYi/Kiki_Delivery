@@ -26,18 +26,17 @@ function getQueryParameter(name) {
 
 const userEmail = getQueryParameter('email');
 const userKey = getQueryParameter('key');
-
-const accessGranted = await db.verifyUser(userEmail, userKey); 
-
-if (accessGranted) {
-    connectButton.style.backgroundColor = 'green';
-    connectButton.textContent = 'Connect to Drone';
-    connectButton.onclick = () => webrtc.initializeConnection();
-} else {
-    connectButton.style.backgroundColor = 'red';
-    connectButton.textContent = 'Authentication Failed';
-}
-
+db.verifyUser(userEmail, userKey).then((result) => {
+    if (result) {
+        connectButton.style.backgroundColor = 'green';
+        connectButton.textContent = 'Connect to Drone';
+        connectButton.onclick = () => webrtc.initializeConnection();
+    } else {
+        connectButton.style.backgroundColor = 'red';
+        connectButton.textContent = 'Authentication Failed';
+    }
+}); 
+    
 
 document.getElementById('send').onclick = async ()=> {
     _droneControl.message = document.getElementById('inputForDrone').value;
