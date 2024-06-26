@@ -1,19 +1,8 @@
 import './style.css';
 
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import db from "/Database/dbFirestore";
 import { isEqual } from 'lodash'
 
-const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTHDOMAIN,
-    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDERID,
-    appId: import.meta.env.VITE_FIREBASE_APPID,
-    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENTID
-};
 
 const servers = {
   iceServers: [
@@ -57,16 +46,7 @@ export default class WebRTC {
         this.remoteStream = new MediaStream();
         this.dataChannel = null;
 
-        this.dataChannelReady = false;
         this.prevData = null;
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        this.database = firebase.firestore();
-        this.callDoc = this.database.collection('calls').doc('DroneConnection');
-        this.answerCandidates = this.callDoc.collection('answerCandidates');
-        this.offerCandidates = this.callDoc.collection('offerCandidates');
     }
 
     async initializeMediaStream() {
@@ -103,11 +83,12 @@ export default class WebRTC {
 
     async initializeConnection() {
         this.pc.onicecandidate = (event) => {
-            event.candidate && this.answerCandidates.add(event.candidate.toJSON());
+            event.candidate && db.answerCandidates.add(event.candidate.toJSON());
         };
     
-        const callData = (await this.callDoc.get()).data();
-    
+        // Here
+        // const callData = (await this.callDoc.get()).data();
+        const callData = await db.getCallData();
         const offerDescription = callData.offer;
         await this.pc.setRemoteDescription(new RTCSessionDescription(offerDescription));
     
@@ -119,9 +100,9 @@ export default class WebRTC {
             sdp: answerDescription.sdp,
         };
     
-        await this.callDoc.update({ answer });
-    
-        this.offerCandidates.onSnapshot((snapshot) => {
+        await db.updateCallDoc(answer);
+        
+        db.offerCandidates.onSnapshot((snapshot) => {
         snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
             let data = change.doc.data();
