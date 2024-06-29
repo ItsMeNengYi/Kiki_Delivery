@@ -12,9 +12,8 @@
         measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENTID
     };
 
-    class dbFirestore extends firebase.firestore.Firestore {
+    class dbFirestore  {
         constructor() {
-            super()
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
             }
@@ -26,7 +25,7 @@
             this.userData = null
 
             this.callDoc = this.dbInstance.collection('calls').doc('DroneConnection');
-            this.answerCandidates = this.callDoc.collection('answerCandidates');
+            this.answerCandidates =  this.callDoc.collection('answerCandidates');
             this.offerCandidates = this.callDoc.collection('offerCandidates');
         }
 
