@@ -37,9 +37,6 @@ db.verifyUser(userEmail, userKey).then((result) => {
     }
 }); 
     
-// connectButton.textContent = 'connect to drone';
-// connectButton.onclick = () => webrtc.initializeConnection();
-
 document.getElementById('send').onclick = async ()=> {
     _droneControl.message = document.getElementById('inputForDrone').value;
     webrtc.sendToDrone(_droneControl);  
@@ -78,3 +75,9 @@ const cameraJoystick = new VirtualJoystick(cameraJoystickContainer, {
     }
 }
 );
+
+// Handle the timer system
+window.addEventListener('beforeunload', function (event) {
+    // End the timer and set the user remaining time
+    
+});

@@ -37,17 +37,20 @@ class dbFirestore  {
         if (this.accessCodeDoc !== null) {
             const access_code_data = (await this.accessCodeDoc.get()).data();
             this.accessCode = access_code_data.curr_access_code;
-            await this.updataAccessCode();
+            await this.updateAccessCode();
             return this.accessCode;
         }
         console.log("Error, cant find access code");
     }
 
     async getUserData(userEmail) {
+        if (this.userData !== null) {
+            return this.userData;
+        }
         const userSnapshot = (await this.dbInstance.collection('user_data').where("email", "==", userEmail).get());
         if (!userSnapshot.empty) {
-            this.userDataDoc = userSnapshot.docs[0];
-            this.userData = this.userDataDoc.data();
+            this.userDataDoc = userSnapshot.docs[0].ref;
+            this.userData = (await this.userDataDoc.get()).data();
             return this.userData;
         } else {
             console.log("No such user!");
@@ -55,7 +58,7 @@ class dbFirestore  {
         }
     }
 
-    async updataAccessCode() {
+    async updateAccessCode() {
         if (this.accessCodeDoc != null) {
             const new_access_code = {
                 curr_access_code: Math.floor(Math.random() * 100000000),
@@ -77,12 +80,36 @@ class dbFirestore  {
         }
     }
 
-    async getCallData() {
-        return (await this.callDoc.get()).data();
+    async setAnswerDescription(answerDescription) {
+        const answer = {
+            type: answerDescription.type,
+            sdp: answerDescription.sdp,
+        };
+    
+        await this.callDoc.update({ answer });
     }
 
-    async updateCallDoc(value) {
-        await this.callDoc.update({value})
+    async getOfferDescription() {
+        const callData = (await this.callDoc.get()).data();
+    
+        return callData.offer;
+    }
+
+    offerCandidatesOnSnapshot(func) {
+        this.offerCandidates.onSnapshot(func)
+    }
+
+   addAnswerCandidates(eventCandidates) {
+        return this.answerCandidates.add(eventCandidates);
+    }
+
+    async setUserRemainingTime(timeUsed) {
+        const timeRemained = await this.getUserRemainingTime() - timeUsed;
+        await this.userDataDoc.update({time: timeRemained})
+    }
+
+    async getUserRemainingTime() {
+        return parseFloat((await this.getUserData()).time);
     }
 }
 
