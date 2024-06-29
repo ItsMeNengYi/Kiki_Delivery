@@ -13,10 +13,8 @@ export default class Socket {
 
         this.client.addEventListener('close', (event) => {
             console.log('Disconnected from server'); 
-            this.client.addEventListener('open', (event) => {
-                console.log('Connected to server!');
-                this.client.send('hello from frontend');
-            });
+            this.client = new WebSocket('ws://localhost:8765');
+            this.initialise()
         });
 
         this.client.addEventListener('error', (error) => {

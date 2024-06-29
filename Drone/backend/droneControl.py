@@ -8,12 +8,12 @@ from piScreen import PiScreen
 from time import sleep
 
 # Pins
-_LEFT_IN3 = 13
-_LEFT_IN4 = 19
-_LEFT_EN = 26
-_RIGHT_IN1 = 16
-_RIGHT_IN2 = 20
-_RIGHT_EN = 21
+_RIGHT_IN3 = 13
+_RIGHT_IN4 = 19
+_RIGHT_EN = 26
+_LEFT_IN1 = 20
+_LEFT_IN2 = 16
+_LEFT_EN = 21
 
 class DroneControl():
     def __init__(self):
@@ -31,100 +31,119 @@ class DroneControl():
         
         # Chip
         self._chip = gpiod.Chip('gpiochip4')
-
+    
         # gpio lines
         self._line_left_en = self._chip.get_line(_LEFT_EN)
-        self._line_left_in3 = self._chip.get_line(_LEFT_IN3)
-        self._line_left_in4 = self._chip.get_line(_LEFT_IN4)
-        self._line_right_in1 = self._chip.get_line(_RIGHT_IN1)
-        self._line_right_in2 = self._chip.get_line(_RIGHT_IN2)
+        self._line_left_in1 = self._chip.get_line(_LEFT_IN1)
+        self._line_left_in2 = self._chip.get_line(_LEFT_IN2)
+        self._line_right_in3 = self._chip.get_line(_RIGHT_IN3)
+        self._line_right_in4 = self._chip.get_line(_RIGHT_IN4)
         self._line_right_en = self._chip.get_line(_RIGHT_EN)
+
+        # motor variables
+        self.left_wheels_speed = 0
+        self.right_wheels_speed = 0
+        self.speed = 0
+        self.direction = True
+
+        # joystick values
+        self.joystick_motor_y = 0
+        self.joystick_motor_x = 0
 
         self.initialise()
 
     def __del__(self):
         self._line_left_en.release()
-        self._line_left_in3.release()
-        self._line_left_in4.release()
-        self._line_right_in1.release()
-        self._line_right_in2.release()
+        self._line_left_in1.release()
+        self._line_left_in2.release()
+        self._line_right_in3.release()
+        self._line_right_in4.release()
         self._line_right_en.release()
 
     def initialise(self):
         self._line_left_en.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
-        self._line_left_in3.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
-        self._line_left_in4.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
-        self._line_right_in1.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
-        self._line_right_in2.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
+        self._line_left_in1.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
+        self._line_left_in2.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
+        self._line_right_in3.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
+        self._line_right_in4.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
         self._line_right_en.request(consumer='motor_control', type=gpiod.LINE_REQ_DIR_OUT)
         
         self.set_value_all_lines(0)
+
+        left_pwm_thread = threading.Thread(target=self.left_pwm_control)
+        left_pwm_thread.start()  
+        right_pwm_thread = threading.Thread(target=self.right_pwm_control)
+        right_pwm_thread.start()  
+
     
     def on_message_callback(self, data):
         if self.textScreen != None and data["message"] != self.data["message"]:
             self.textScreen.add_message(data["message"])
         self.data = data
-        print("Drone received" + json.dumps(data))
+        self.joystick_motor_x = float(self.data["movement"]["x"])
+        self.joystick_motor_y = -float(self.data["movement"]["y"])
 
-    def pwm_control(self):
+    def left_pwm_control(self):
         while True:
-            self._line_left_en.set_value(1)
-            self._line_right_en.set_value(1)
-            sleep(self.get_speed() / 1000)
-            self._line_left_en.set_value(0)
-            self._line_right_en.set_value(0)
-            sleep((1 - self.get_speed()) / 1000)
+            try:
+                self._line_left_en.set_value(1)
+                sleep(self.left_wheels_speed / 1000)
+                self._line_left_en.set_value(0)
+                sleep((1 - self.left_wheels_speed) / 1000)
+            except :
+                print("left")
+
+    def right_pwm_control(self):
+        while True:
+            try:
+                self._line_right_en.set_value(1)
+                sleep(self.right_wheels_speed / 1000)
+                self._line_right_en.set_value(0)
+                sleep((1 - self.right_wheels_speed) / 1000)
+            except :
+                print("right")
     
     def set_value_all_lines(self, value):
         self._line_left_en.set_value(value)
-        self._line_left_in3.set_value(value)
-        self._line_left_in4.set_value(value)
-        self._line_right_in1.set_value(value)
-        self._line_right_in2.set_value(value)
+        self._line_left_in1.set_value(value)
+        self._line_left_in2.set_value(value)
+        self._line_right_in3.set_value(value)
+        self._line_right_in4.set_value(value)
         self._line_right_en.set_value(value)
-
-    def get_x_val(self):
-        return float(self.data["movement"]["x"])
     
-    def get_y_val(self):
-        return float(self.data["movement"]["y"])
-    
-    def get_speed(self):
-        if (self.get_x_val() == 0):
-            return self.get_y_val()
-        sita = math.atan(abs(self.get_y_val() / self.get_x_val()))
-        return math.sin(sita)
-    
-    def get_direction(self):
-        # True forward, false backward
-        return self.get_x_val() > 0
+    def update_wheels_speed(self):
+        self.speed = round(math.sqrt(self.joystick_motor_x**2 + self.joystick_motor_y ** 2),2)
+        self.left_wheels_speed = self.speed
+        self.right_wheels_speed = self.speed
 
-    def is_moving(self):
-        return abs(self.get_x_val()) + abs(self.get_y_val()) != 0; 
-
-    def update_lines_value(self):
-        if (self.is_moving()):
-            # Forward
-            if (self.get_direction()):
-                self._line_left_in3.set_value(0)
-                self._line_left_in4.set_value(1)
-                self._line_right_in1.set_value(1)
-                self._line_right_in2.set_value(0)
+        if self.joystick_motor_x != 0:
+            decelerate = math.sin(math.atan(abs(self.joystick_motor_y / self.joystick_motor_x)))
+            if self.joystick_motor_x > 0:
+                self.right_wheels_speed = decelerate
             else:
-                self._line_left_in3.set_value(1)
-                self._line_left_in4.set_value(0)
-                self._line_right_in1.set_value(0)
-                self._line_right_in2.set_value(1)
-
-        else:
-            self.set_value_all_lines(0)
-
+                self.left_wheels_speed = decelerate
+        
+        if self.joystick_motor_y > 0:
+            self.right_wheels_speed = 1 - self.right_wheels_speed
 
     def update(self):
-        pwm_thread = threading.Thread(target=self.pwm_control)
-        pwm_thread.start()  
-
-        self.update_lines_value()
+        if (self.speed != 0):
+            if (self.direction != (self.joystick_motor_y > 0)):
+                self.direction = self.joystick_motor_y > 0
+                # Forward
+                if (self.direction):
+                    self._line_right_in3.set_value(1)
+                    self._line_right_in4.set_value(1)
+                    self._line_left_in1.set_value(0)
+                    self._line_left_in2.set_value(1)
+                else:
+                    self._line_right_in3.set_value(0)
+                    self._line_right_in4.set_value(1)
+                    self._line_left_in2.set_value(0)
+                    self._line_left_in1.set_value(1)
+        else:
+            self.set_value_all_lines(0)
+        self.update_wheels_speed()
 
     def addTextScreen(self, screen):
         self.textScreen = screen
