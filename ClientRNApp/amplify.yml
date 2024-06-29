@@ -1,14 +1,13 @@
 version: 1
 applications:
-  - appRoot: ClientRNApp/
-    frontend:
+    -frontend:
         phases:
             preBuild:
                 commands:
-                    - 'npm install'
+                    - npm install
             build:
                 commands:
-                    - 'npx expo export -p web'
+                    - npx expo export -p web
         artifacts:
             baseDirectory: dist
             files:
