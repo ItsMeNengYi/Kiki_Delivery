@@ -1,19 +1,8 @@
 import './style.css';
 
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import db from "/Database/dbFirestore";
 import { isEqual } from 'lodash'
 
-const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTHDOMAIN,
-    databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDERID,
-    appId: import.meta.env.VITE_FIREBASE_APPID,
-    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENTID
-};
 const servers = {
   iceServers: [
     {
@@ -59,13 +48,10 @@ export default class WebRTC {
         this.dataChannelReady = false;
         this.prevData = null;
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        this.database = firebase.firestore();
-        this.callDoc = this.database.collection('calls').doc('DroneConnection');
-        this.answerCandidates = this.callDoc.collection('answerCandidates');
-        this.offerCandidates = this.callDoc.collection('offerCandidates');
+        this.startTime = 0;
+        this.endTime = 0;
+        this.userRemainingTime = 0; // in minutes
+        this.countdownTime = 0; // in second
     }
 
     async initializeMediaStream() {
@@ -102,32 +88,59 @@ export default class WebRTC {
 
     async initializeConnection() {
         this.pc.onicecandidate = (event) => {
-            event.candidate && this.answerCandidates.add(event.candidate.toJSON());
+            event.candidate && db.addAnswerCandidates(event.candidate.toJSON());
         };
-    
-        const callData = (await this.callDoc.get()).data();
-    
-        const offerDescription = callData.offer;
-        await this.pc.setRemoteDescription(new RTCSessionDescription(offerDescription));
-    
+        
+        await this.pc.setRemoteDescription(new RTCSessionDescription((await db.getOfferDescription())));
         const answerDescription = await this.pc.createAnswer();
         await this.pc.setLocalDescription(answerDescription);
-    
-        const answer = {
-            type: answerDescription.type,
-            sdp: answerDescription.sdp,
-        };
-    
-        await this.callDoc.update({ answer });
-    
-        this.offerCandidates.onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added') {
-            let data = change.doc.data();
-                this.pc.addIceCandidate(new RTCIceCandidate(data));
+        await db.setAnswerDescription(answerDescription);
+        db.offerCandidatesOnSnapshot((snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === 'added') {
+                let data = change.doc.data();
+                    this.pc.addIceCandidate(new RTCIceCandidate(data));
+                }
+            });
+        });
+
+        this.userRemainingTime = await db.getUserRemainingTime();
+        this.countdownTime = this.userRemainingTime * 60;
+        
+        var countdownInterval = null;
+        this.pc.onconnectionstatechange = async (event) => {
+            if (this.pc.connectionState === "connected") {
+                // Return current time in miliseconds and convert to second
+                this.startTime = performance.now() / 1000;
+                countdownInterval = setInterval(() => {
+                    this.countdownTime -= 1;
+                    document.getElementById('userTimeCountdown').textContent = Math.floor(this.countdownTime / 60) 
+                                                                    + ' min ' 
+                                                                    + this.countdownTime % 60
+                                                                    + ' sec remaining...';
+                    if (this.countdownTime <= 0) {
+                        clearInterval(countdownInterval); // Clear the interval
+                        document.getElementById('userTimeCountdown').textContent = 'Time is up!';
+                      }
+                }, 1000);
+                window.setTimeout(() => {
+                    // TODO: Disconnect user and drone once the remaining time is reached
+                },this.userRemainingTime * 60 * 1000 );
             }
-        });
-        });
+            if (this.pc.connectionState === "disconnected") {
+                this.endTime = performance.now() / 1000;
+                const duration = this.endTime - this.startTime;
+                clearInterval(countdownInterval);
+                document.getElementById('userTimeCountdown').textContent = Math.floor(duration / 60) 
+                                                                                + ' min ' 
+                                                                                + Math.floor(duration % 60 * 100) / 100.0
+                                                                                + ' sec used';
+                await db.setUserRemainingTime(Math.round(duration / 60.0 * 100)/100.0);
+            }
+            if (this.pc.connectionState === "failed") {
+                
+            }
+          };
     }
 
     sendToDrone(data) {
