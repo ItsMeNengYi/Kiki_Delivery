@@ -48,7 +48,7 @@ class App(tornado.websocket.WebSocketHandler):
         self.py_socket_instance = py_socket_instance
 
     def on_message(self, message):
-        print("frontend:" + message)
+        # print("frontend:" + message)
         if message == self.disconnectMessage:
             self.py_socket_instance.close_server()
         self.py_socket_instance.send_to_drone(message)
