@@ -17,28 +17,28 @@ webrtc.initializeMediaStream();
 webrtc.initializeDataStream();
 
 const connectButton = document.getElementById('connectButton');
-// connectButton.textContent = 'Authenticating...';
+connectButton.textContent = 'Authenticating...';
 
-// function getQueryParameter(name) {
-//     const urlParams = new URLSearchParams(window.location.search);
-//     return urlParams.get(name);
-// }
+function getQueryParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
 
-// const userEmail = getQueryParameter('email');
-// const userKey = getQueryParameter('key');
-// db.verifyUser(userEmail, userKey).then((result) => {
-//     if (result) {
-//         connectButton.style.backgroundColor = 'green';
-//         connectButton.textContent = 'Connect to Drone';
-//         connectButton.onclick = () => webrtc.initializeConnection();
-//     } else {
-//         connectButton.style.backgroundColor = 'red';
-//         connectButton.textContent = 'Authentication Failed';
-//     }
-// }); 
+const userEmail = getQueryParameter('email');
+const userKey = getQueryParameter('key');
+db.verifyUser(userEmail, userKey).then((result) => {
+    if (result) {
+        connectButton.style.backgroundColor = 'green';
+        connectButton.textContent = 'Connect to Drone';
+        connectButton.onclick = () => webrtc.initializeConnection();
+    } else {
+        connectButton.style.backgroundColor = 'red';
+        connectButton.textContent = 'Authentication Failed';
+    }
+}); 
     
-connectButton.textContent = 'connect to drone';
-connectButton.onclick = () => webrtc.initializeConnection();
+// connectButton.textContent = 'connect to drone';
+// connectButton.onclick = () => webrtc.initializeConnection();
 
 document.getElementById('send').onclick = async ()=> {
     _droneControl.message = document.getElementById('inputForDrone').value;
