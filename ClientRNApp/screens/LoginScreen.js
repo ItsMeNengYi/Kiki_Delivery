@@ -76,6 +76,11 @@ const LoginScreen = () => {
         style={styles.container}
         behavior='padding'
     >
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Kiki's Delivery</Text>
+        <Text style={styles.subtitle}>Instant Drone Rental Service</Text>
+      </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           placeholder='Email'
@@ -120,6 +125,21 @@ const LoginScreen = () => {
 export default LoginScreen 
 
 const styles = StyleSheet.create({
+  titleContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 40
+  },
+  title: {
+    color: 'dark grey',
+    fontWeight: '550',
+    fontSize: 45,
+  },
+  subtitle: {
+    color: 'grey',
+    fontWeight: '650',
+    fontSize: 15,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
