@@ -52,6 +52,9 @@ export default class WebRTC {
         this.endTime = 0;
         this.userRemainingTime = 0; // in minutes
         this.countdownTime = 0; // in second
+
+        this.connectButton = document.getElementById('connectButton');
+        this.countdownInterval = null;
     }
 
     async initializeMediaStream() {
@@ -107,38 +110,45 @@ export default class WebRTC {
         this.userRemainingTime = await db.getUserRemainingTime();
         this.countdownTime = this.userRemainingTime * 60;
         
-        var countdownInterval = null;
         this.pc.onconnectionstatechange = async (event) => {
             if (this.pc.connectionState === "connected") {
                 // Return current time in miliseconds and convert to second
                 this.startTime = performance.now() / 1000;
-                countdownInterval = setInterval(() => {
-                    this.countdownTime -= 1;
+                this.countdownInterval = setInterval(() => {
+                    this.countdownTime = this.userRemainingTime * 60 - (performance.now() / 1000 - this.startTime);
                     document.getElementById('userTimeCountdown').textContent = Math.floor(this.countdownTime / 60) 
                                                                     + ' min ' 
-                                                                    + this.countdownTime % 60
+                                                                    + Math.floor(this.countdownTime % 60)
                                                                     + ' sec remaining...';
                     if (this.countdownTime <= 0) {
-                        clearInterval(countdownInterval); // Clear the interval
+                        clearInterval(this.countdownInterval); // Clear the interval
                         document.getElementById('userTimeCountdown').textContent = 'Time is up!';
                       }
                 }, 1000);
                 window.setTimeout(() => {
                     // TODO: Disconnect user and drone once the remaining time is reached
-                },this.userRemainingTime * 60 * 1000 );
+                    this.pc.close();
+                    this.connectButton.textContent = "disconnected to drone";
+                    this.connectButton.disabled = true;;
+                    this.connectButton.style.backgroundColor = 'red';
+                    clearInterval(this.countdownInterval); // Clear the interval
+                }, this.userRemainingTime * 60 * 1000 );
+                this.connectButton.textContent = "Connected! Press to Disconnect";
+                this.connectButton.style.backgroundColor = 'green';
+                this.connectButton.onclick = async ()=> {
+                    this.closeConnection();
+                };
             }
             if (this.pc.connectionState === "disconnected") {
-                this.endTime = performance.now() / 1000;
-                const duration = this.endTime - this.startTime;
-                clearInterval(countdownInterval);
-                document.getElementById('userTimeCountdown').textContent = Math.floor(duration / 60) 
-                                                                                + ' min ' 
-                                                                                + Math.floor(duration % 60 * 100) / 100.0
-                                                                                + ' sec used';
-                await db.setUserRemainingTime(Math.round(duration / 60.0 * 100)/100.0);
+                await this.onDisconnect();
             }
             if (this.pc.connectionState === "failed") {
-                
+                this.connectButton.textContent = "Connection failed";
+                this.connectButton.style.backgroundColor = 'red';
+            }
+            if (this.pc.connectionState === "connecting") {
+                this.connectButton.textContent = "Connecting...";
+                this.connectButton.style.backgroundColor = 'yellow';
             }
           };
     }
@@ -161,5 +171,35 @@ export default class WebRTC {
 
     getConnectionState() {
         return this.pc.connectionState;
+    }
+
+    async closeConnection() {
+        this.pc.close();
+        await this.onDisconnect();
+    }
+
+    async setUserTime(duration) {
+        this.startTime = 0;
+        await db.setUserRemainingTime(duration);
+    }
+
+    calculateDuration() {
+        this.endTime = performance.now() / 1000;
+        return this.endTime - this.startTime;
+    }
+
+    async onDisconnect() {
+        this.connectButton.textContent = "Disconnected";
+        this.connectButton.style.backgroundColor = 'red';
+        this.connectButton.disabled = true;
+        if (this.startTime != 0){
+            clearInterval(this.countdownInterval);     
+            const duration = this.calculateDuration();  
+            document.getElementById('userTimeCountdown').textContent = Math.floor(duration / 60) 
+                                                                            + ' min ' 
+                                                                            + Math.floor(duration % 60 * 100) / 100.0
+                                                                            + ' sec used';
+            await this.setUserTime(Math.round(duration / 60.0 * 100)/100.0);
+        }
     }
 }

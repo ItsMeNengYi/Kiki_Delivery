@@ -77,7 +77,7 @@ const cameraJoystick = new VirtualJoystick(cameraJoystickContainer, {
 );
 
 // Handle the timer system
-window.addEventListener('beforeunload', function (event) {
-    // End the timer and set the user remaining time
-    
+window.addEventListener('beforeunload', async function (event) {
+    // TODO:End the timer and set the user remaining time
+    // await webrtc.closeConnection();
 });
