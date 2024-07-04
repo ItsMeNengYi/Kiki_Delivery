@@ -11,6 +11,11 @@ let _droneControl = {
         y : 0
     }  
 }
+try {
+    screen.orientation.lock('landscape');
+} catch(error) {
+    console.log("Device doesnt support screen orientation lock");
+}
 
 const webrtc = new WebRTC();
 webrtc.initializeMediaStream();
