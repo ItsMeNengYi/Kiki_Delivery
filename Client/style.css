@@ -70,3 +70,10 @@ body {
   aspect-ratio: 1.5;
   font-size:x-large;
 }
+
+.middle-buttons {
+  justify-content: space-evenly;
+  align-items: center;
+  display:flex;
+  flex-direction: column;
+}

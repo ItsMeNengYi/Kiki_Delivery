@@ -9,12 +9,11 @@ let _droneControl = {
     movement : {
         x : 0,
         y : 0
-    }  
-}
-try {
-    screen.orientation.lock('landscape');
-} catch(error) {
-    console.log("Device doesnt support screen orientation lock");
+    },
+    lift : {
+        up : false,
+        down : true
+    }
 }
 
 const webrtc = new WebRTC();
@@ -72,11 +71,11 @@ const cameraJoystick = new VirtualJoystick(cameraJoystickContainer, {
     handleColor: 'white',
     handleRadius: 30,
     onChange: function(delta) {
-        const x = Math.round(delta.x*100)/100;
-        const y = Math.round(delta.y*100)/100; 
-        _droneControl.movement.x = x;
-        _droneControl.movement.y = y;
-        webrtc.sendToDrone(_droneControl);  
+        // const x = Math.round(delta.x*100)/100;
+        // const y = Math.round(delta.y*100)/100; 
+        // _droneControl.movement.x = x;
+        // _droneControl.movement.y = y;
+        // webrtc.sendToDrone(_droneControl);  
     }
 }
 );
@@ -86,3 +85,27 @@ window.addEventListener('beforeunload', async function (event) {
     // TODO:End the timer and set the user remaining time
     // await webrtc.closeConnection();
 });
+
+const lift_up_button = document.getElementById('Lift-Up-Button')
+lift_up_button.onclick = async ()=> {
+    // Implement lift upward movement
+    _droneControl.lift.up = !_droneControl.lift.up;
+    if (_droneControl.lift.up) {
+        lift_up_button.style.backgroundColor = "green";
+    } else {
+        lift_up_button.style.backgroundColor = "white";
+    }
+    webrtc.sendToDrone(_droneControl);  
+};
+
+const lift_down_button = document.getElementById('Lift-Down-Button')
+document.getElementById('Lift-Down-Button').onclick = async ()=> {
+    // Implement lift downward movement
+    _droneControl.lift.down = !_droneControl.lift.down;
+    if (_droneControl.lift.down) {
+        lift_down_button.style.backgroundColor = "green";
+    } else {
+        lift_down_button.style.backgroundColor = "white";
+    }
+    webrtc.sendToDrone(_droneControl);  
+};
