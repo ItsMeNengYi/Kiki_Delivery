@@ -12,7 +12,7 @@ let _droneControl = {
     },
     lift : {
         up : false,
-        down : true
+        down : false
     }
 }
 
