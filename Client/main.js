@@ -13,6 +13,14 @@ let _droneControl = {
     lift : {
         up : false,
         down : false
+    },
+    rot : {
+        left : false,
+        right : false
+    },
+    cam : {
+        x : 0,
+        y : 0
     }
 }
 
@@ -71,11 +79,11 @@ const cameraJoystick = new VirtualJoystick(cameraJoystickContainer, {
     handleColor: 'white',
     handleRadius: 30,
     onChange: function(delta) {
-        // const x = Math.round(delta.x*100)/100;
-        // const y = Math.round(delta.y*100)/100; 
-        // _droneControl.movement.x = x;
-        // _droneControl.movement.y = y;
-        // webrtc.sendToDrone(_droneControl);  
+        const x = Math.round(delta.x*100)/100;
+        const y = Math.round(delta.y*100)/100; 
+        _droneControl.cam.x = x;
+        _droneControl.cam.y = y;
+        webrtc.sendToDrone(_droneControl);  
     }
 }
 );
@@ -99,7 +107,7 @@ lift_up_button.onclick = async ()=> {
 };
 
 const lift_down_button = document.getElementById('Lift-Down-Button')
-document.getElementById('Lift-Down-Button').onclick = async ()=> {
+lift_down_button.onclick = async ()=> {
     // Implement lift downward movement
     _droneControl.lift.down = !_droneControl.lift.down;
     if (_droneControl.lift.down) {
@@ -109,3 +117,38 @@ document.getElementById('Lift-Down-Button').onclick = async ()=> {
     }
     webrtc.sendToDrone(_droneControl);  
 };
+
+const rot_left_button = document.getElementById('Rot-left-button')
+"touchstart mousedown".split(" ").forEach((e) => {
+    rot_left_button.addEventListener(e, (event) => {
+        _droneControl.rot.left = true;
+        rot_left_button.style.backgroundColor = "green";
+        webrtc.sendToDrone(_droneControl);
+    })
+})
+
+"touchend mouseup".split(" ").forEach((e) => {
+    rot_left_button.addEventListener(e, (event) => {
+        _droneControl.rot.left = false;
+        rot_left_button.style.backgroundColor = "white";
+        webrtc.sendToDrone(_droneControl);
+    })
+})
+
+const rot_right_button = document.getElementById('Rot-right-button')
+"touchstart mousedown".split(" ").forEach((e) => {
+    rot_right_button.addEventListener(e, (event) => {
+        _droneControl.rot.right = true;
+        rot_right_button.style.backgroundColor = "green";
+        webrtc.sendToDrone(_droneControl);
+    })
+})
+
+"touchend mouseup".split(" ").forEach((e) => {
+    rot_right_button.addEventListener(e, (event) => {
+        _droneControl.rot.right = false;
+        rot_right_button.style.backgroundColor = "white";
+        webrtc.sendToDrone(_droneControl);
+    })
+})
+
