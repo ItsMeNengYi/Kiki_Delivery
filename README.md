@@ -1,6 +1,11 @@
 # Kiki's Delivery
 ## NUS SoC Orbital 2024 Project
 
+This is the GitHub repository for Kiki's Delivery, an NUS SoC Orbital 2024 Project. /
+
+## Scope
+Kiki’s Delivery is a publicly available (ground-based) drone rental service, which allows users to pay money in order to rent drones for a certain amount of time. The client side app supports both Web and Android.
+
 ## Components
 Client Side React Native based Web/Mobile App \
 Client Side Controller Web App \
