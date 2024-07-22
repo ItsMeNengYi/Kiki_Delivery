@@ -1,11 +1,11 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth'
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig.js'
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigation } from '@react-navigation/native'
 
-const LoginScreen = () => {
+const LoginScreenAndroid = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -122,7 +122,16 @@ const LoginScreen = () => {
   )
 }
 
-export default LoginScreen 
+var exportedScreen;
+if (Platform.OS === 'android') {
+  exportedScreen = LoginScreenAndroid 
+} else if (Platform.OS === 'web') {
+  exportedScreen = LoginScreenAndroid 
+} else {
+  exportedScreen = LoginScreenAndroid 
+}
+
+export default exportedScreen;
 
 const styles = StyleSheet.create({
   titleContainer: {
