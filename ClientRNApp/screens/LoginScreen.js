@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View, Platform } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View, Platform, Image, ImageBackground } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth'
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig.js'
@@ -72,53 +72,58 @@ const LoginScreenAndroid = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-        style={styles.container}
-        behavior='padding'
-    >
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Kiki's Delivery</Text>
-        <Text style={styles.subtitle}>Instant Drone Rental Service</Text>
-      </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder='Email'
-          value={email}
-          onChangeText={text => setEmail(text)}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder='Password'
-          value={password}
-          onChangeText={text => setPassword(text)}
-          style={styles.input}
-          secureTextEntry
-        />
-
-        <TouchableOpacity
-          onPress={handlePasswordReset}
-          style={styles.forgotPasswordButton}
+    <View style={styles.container}>
+      <ImageBackground source={require('../assets/images/android_login_background.png')} resizeMode='cover' style={styles.backgroundImage}>
+        <KeyboardAvoidingView
+            style={styles.keyboardAvoidingContainer}
+            behavior='padding'
         >
-          <Text style={styles.forgotPasswordButtonText}>Forgot Password?</Text>
-        </TouchableOpacity>
-      </View>
+          <Image source={require('../assets/favicon_small_margins.png')} style={styles.logoImage}/>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Welcome</Text>
+            <Text style={styles.subtitle}>Please login to continue.</Text>
+          </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={handleLogin}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleSignUp}
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.buttonOutlineText}>Register</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder='Email'
+              value={email}
+              onChangeText={text => setEmail(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder='Password'
+              value={password}
+              onChangeText={text => setPassword(text)}
+              style={styles.input}
+              secureTextEntry
+            />
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              onPress={handleLogin}
+              style={styles.loginButton}
+            >
+              <Text style={styles.loginButtonText}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSignUp}
+              style={[styles.registerButton]}
+            >
+              <Text style={styles.registerButtonText}>Register</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handlePasswordReset}
+              style={styles.forgotPasswordButton}
+            >
+              <Text style={styles.forgotPasswordButtonText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </ImageBackground>
+    </View>
   )
 }
 
@@ -134,25 +139,42 @@ if (Platform.OS === 'android') {
 export default exportedScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  backgroundImage: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  keyboardAvoidingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 35
+  },
+  backgroundImage: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  logoImage: {
+    width: 90, 
+    height: 90,
+    justifyContent: 'center',
+  },
   titleContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 40
+    marginBottom: 20
   },
   title: {
-    color: 'dark grey',
-    fontWeight: '550',
-    fontSize: 45,
+    color: 'red',
+    fontWeight: '680',
+    fontSize: 50,
   },
   subtitle: {
-    color: 'grey',
-    fontWeight: '650',
-    fontSize: 15,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    color: 'dark grey',
+    fontWeight: '680',
+    fontSize: 20,
   },
   inputContainer: { 
     width: '80%'
@@ -162,14 +184,44 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
-    marginTop: 5
+    marginTop: 5,
+    borderWidth: 2,
+    borderColor: 'coral',
+    fontSize: 16
   },
 
   buttonContainer: {  
     width: '60%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40
+    marginTop: 10
+  },
+  loginButton: {
+    backgroundColor: 'coral',
+    width: '100%',
+    padding: 12,
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  loginButtonText: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 16
+  },
+  registerButton: {
+    marginTop: 5,
+    backgroundColor: 'white',
+    width: '100%',
+    padding: 5,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'coral',
+    alignItems: 'center'
+  },
+  registerButtonText: {
+    color: 'coral',
+    fontWeight: '700',
+    fontSize: 16
   },
 
   forgotPasswordButton: {
@@ -179,31 +231,7 @@ const styles = StyleSheet.create({
   forgotPasswordButtonText: {
     fontSize: 15,
     fontWeight: '500',
-    color: 'dimgrey'
+    color: 'dimgrey',
+    textDecorationLine: 'underline'
   },
-
-  button: {
-    backgroundColor: 'coral',
-    width: '100%',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center'
-  },
-  buttonOutline: {
-    backgroundColor: 'white',
-    marginTop: 5,
-    borderColor: 'coral',
-    borderWidth: 2
-  },
-
-  buttonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16
-  },
-  buttonOutlineText: {
-    color: 'coral',
-    fontWeight: '700',
-    fontSize: 16
-  }
 })
