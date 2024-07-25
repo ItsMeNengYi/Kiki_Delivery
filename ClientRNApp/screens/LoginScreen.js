@@ -293,7 +293,6 @@ const styles = StyleSheet.create({
     fontSize: 50,
   },
   subtitle: {
-    color: 'dark grey',
     fontWeight: '680',
     fontSize: 20,
   },
@@ -382,12 +381,12 @@ const webStyles = StyleSheet.create({
     width: 120, 
     height: 120,
     justifyContent: 'center',
-    marginLeft: 30
+    marginLeft: 40
   },
   titleContainer: {
     justifyContent: 'center',
     alignItems: 'left',
-    marginLeft: 30,
+    marginLeft: 40,
     marginBottom: 20
   },
   title: {
@@ -402,7 +401,7 @@ const webStyles = StyleSheet.create({
   },
   inputContainer: { 
     width: '60%',
-    marginLeft: 30
+    marginLeft: 40
   },
   input: {
     backgroundColor: 'white',
@@ -419,7 +418,7 @@ const webStyles = StyleSheet.create({
     justifyContent: 'left',
     alignItems: 'left',
     marginTop: 10,
-    marginLeft: 30,
+    marginLeft: 40,
     flexDirection: 'row'
   },
   loginButton: {
@@ -453,7 +452,7 @@ const webStyles = StyleSheet.create({
   forgotPasswordButton: {
     alignItems: 'left',
     marginTop: 15,
-    marginLeft: 30,
+    marginLeft: 40,
     marginBottom: 50
   },
   forgotPasswordButtonText: {
