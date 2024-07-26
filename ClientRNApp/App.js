@@ -26,7 +26,7 @@ function App() {
         <Stack.Screen options={{ headerShown: false }} name="PasswordResetSuccess" component={PasswordResetSuccessScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EmailNotVerified" component={EmailNotVerfiedScreen} />
         <Stack.Screen options={{ headerShown: false }} name="NewUserInfo" component={NewUserInfo} />
-        <Stack.Screen options={{ headerTitle: 'Profile' }} name="Profile" component={ProfileScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

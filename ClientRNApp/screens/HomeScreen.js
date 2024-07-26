@@ -255,7 +255,6 @@ const HomeScreenWeb = () => {
 
       <View style={webStyles.contentContainer}>
         <View style={webStyles.whiteContainer}>
-          <Text style={webStyles.droneRentalText}>Drone Rental</Text>
           <Text style={webStyles.timeTitleText}>Usage Time Remaining:</Text>
           <Text style={webStyles.timeText}>{(time).toFixed(2)} minutes</Text>
           <TouchableOpacity
@@ -340,7 +339,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30
+    marginTop: 50
   },
   timeTitleText: {
     fontWeight: '500',
@@ -566,6 +565,6 @@ const webStyles = StyleSheet.create({
   controlsButtonText: {
     color: 'white',
     fontWeight: '700',
-    fontSize: 25
+    fontSize: 20
   },
 })
