@@ -19,14 +19,14 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen options={{ headerShown: false}} name="Login" component={LoginScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen options={{ headerShown: false}} name="Home" component={HomeScreen} />
+        <Stack.Screen options={{ headerShown: false}} name="Register" component={RegisterScreen} />
         <Stack.Screen options={{ headerShown: false }} name="RegisterSuccess" component={RegisterSuccessScreen} />
-        <Stack.Screen options={{ headerTitle: 'Password Reset' }} name="PasswordReset" component={PasswordResetScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="PasswordReset" component={PasswordResetScreen} />
         <Stack.Screen options={{ headerShown: false }} name="PasswordResetSuccess" component={PasswordResetSuccessScreen} />
         <Stack.Screen options={{ headerShown: false }} name="EmailNotVerified" component={EmailNotVerfiedScreen} />
         <Stack.Screen options={{ headerShown: false }} name="NewUserInfo" component={NewUserInfo} />
-        <Stack.Screen options={{ headerTitle: 'Profile' }} name="Profile" component={ProfileScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
