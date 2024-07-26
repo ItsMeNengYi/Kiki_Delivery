@@ -19,7 +19,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen options={{ headerShown: false}} name="Login" component={LoginScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen options={{ headerShown: false}} name="Home" component={HomeScreen} />
         <Stack.Screen options={{ headerShown: false}} name="Register" component={RegisterScreen} />
         <Stack.Screen options={{ headerShown: false }} name="RegisterSuccess" component={RegisterSuccessScreen} />
         <Stack.Screen options={{ headerShown: false }} name="PasswordReset" component={PasswordResetScreen} />
