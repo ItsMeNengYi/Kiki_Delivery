@@ -10,6 +10,26 @@ const servers = {
     },
   ]
 };
+
+const _default_droneControl = {
+    message:"none",
+    movement : {
+        x : 0,
+        y : 0
+    },
+    lift : {
+        up : false,
+        down : false
+    },
+    rot : {
+        left : false,
+        right : false
+    },
+    cam : {
+        x : 0,
+        y : 0
+    }
+}
 // const servers = {
 //   iceServers: [
 //     {
@@ -126,7 +146,6 @@ export default class WebRTC {
                       }
                 }, 1000);
                 window.setTimeout(() => {
-                    // TODO: Disconnect user and drone once the remaining time is reached
                     this.pc.close();
                     this.connectButton.textContent = "disconnected to drone";
                     this.connectButton.disabled = true;;
@@ -176,6 +195,7 @@ export default class WebRTC {
     }
 
     async closeConnection() {
+        this.sendToDrone(_default_droneControl);
         this.pc.close();
         await this.onDisconnect();
     }
