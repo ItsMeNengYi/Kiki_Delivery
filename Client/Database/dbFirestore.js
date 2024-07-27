@@ -71,7 +71,6 @@ class dbFirestore  {
     }
 
     async verifyUser(userEmail, accessCode) {
-        return true;
         if ((await this.getUserData(userEmail)) != null && accessCode == (await this.getAccessCode())) {
             console.log("access granted!")
             return true;
