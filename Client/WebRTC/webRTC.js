@@ -78,13 +78,13 @@ export default class WebRTC {
     }
 
     async initializeMediaStream() {
-        // this.localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        this.localStream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
         this.remoteStream = new MediaStream();
 
         // Push tracks from local stream to peer connection
-        // this.localStream.getTracks().forEach((track) => {
-        //     this.pc.addTrack(track, this.localStream);
-        // });
+        this.localStream.getTracks().forEach((track) => {
+            this.pc.addTrack(track, this.localStream);
+        });
 
         // Pull tracks from remote stream, add to video stream
         this.pc.ontrack = (event) => {
@@ -93,7 +93,7 @@ export default class WebRTC {
             });
         };
 
-        // webcamVideo.srcObject = this.localStream;
+        webcamVideo.srcObject = this.localStream;
         remoteVideo.srcObject = this.remoteStream;
     }
 
