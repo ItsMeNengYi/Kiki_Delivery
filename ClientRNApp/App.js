@@ -1,4 +1,5 @@
 import React from 'react';
+import {LogBox} from 'react-native';
 import {View, Text, StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -11,6 +12,9 @@ import PasswordResetSuccessScreen from './screens/PasswordResetSuccessScreen';
 import EmailNotVerfiedScreen from './screens/EmailNotVerifiedScreen';
 import NewUserInfo from './screens/NewUserDataScreen';
 import ProfileScreen from './screens/ProfileScreen';
+
+// Ignore all log notifications
+// LogBox.ignoreAllLogs();
 
 const Stack = createNativeStackNavigator();
 
