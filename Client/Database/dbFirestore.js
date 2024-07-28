@@ -111,6 +111,10 @@ class dbFirestore  {
     async getUserRemainingTime() {
         return parseFloat((await this.getUserData()).time);
     }
+
+    async clearCallDoc() {
+        await this.callDoc.delete();
+    }
 }
 
 let db;export default db = new dbFirestore();

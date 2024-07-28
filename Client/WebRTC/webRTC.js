@@ -224,5 +224,6 @@ export default class WebRTC {
                                                                             + ' sec used';
             await this.setUserTime(Math.round(duration / 60.0 * 100)/100.0);
         }
+        await db.clearCallDoc();
     }
 }
