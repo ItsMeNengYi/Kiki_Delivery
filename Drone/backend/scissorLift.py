@@ -1,50 +1,42 @@
 import gpiod
 from time import sleep
 
-# Define the chip and line offsets for your GPIO pins
-chip = gpiod.Chip("gpiochip4")
-lines = [17, 27, 22, 10, 11]  # GPIO pins IN1, IN2, IN3, IN4, ENA
+_LINE_IN1 = 23
+_LINE_IN2 = 24
 
-# Define the sequence for stepping
-seq = [
-    [1, 1, 0, 0],
-    [0, 1, 1, 0],
-    [0, 0, 1, 1],
-    [1, 0, 0, 1],
-]
+class ScissorLift():
+    def __init__(self):
+        self._chip = gpiod.Chip("gpiochip4")
+        self._line1 = self._chip.get_line(_LINE_IN1)
+        self._line2 = self._chip.get_line(_LINE_IN2)
+        self.line1_value = 0
+        self.line2_value = 0
 
-# Set the initial state of the GPIO pins
-for index, line in enumerate(lines):
-    lines[index] = chip.get_line(line)
-    lines[index].request(consumer="scissor_lift_control", type=gpiod.LINE_REQ_DIR_OUT)
+        self._line1.request(consumer='scissor_lift_control', type=gpiod.LINE_REQ_DIR_OUT)
+        self._line2.request(consumer='scissor_lift_control', type=gpiod.LINE_REQ_DIR_OUT)
 
-lines[0].set_value(1)
-rotation_count = 2000
+    def update(self):
+        self._line1.set_value(self.line1_value)
+        self._line2.set_value(self.line2_value)
 
-def backward():
-    for i in range (rotation_count):
-        for fullStep in range(4):
-            for pin in range(1, 5, 1):  
-                lines[pin].set_value(seq[fullStep][pin - 1])
-                sleep(0.001)
+    def up(self):
+        self.line1_value = 0
+        self.line2_value = 1
 
-def forward():
-    for i in range (rotation_count):
-        for fullStep in range(4):
-            for pin in range(4, 0, -1):  
-                lines[pin].set_value(seq[fullStep][pin - 1])
-                sleep(0.015)
+    def down(self):
+        self.line1_value = 1
+        self.line2_value = 0
 
+    def stop(self):
+        self.line1_value = 0
+        self.line2_value = 0
 
-while True:
-    if input("continue?") == "0" :
-        break
-    # backward()
-    # sleep(2)
-    forward()
-    sleep(2)
-
-# Release the GPIO lines and close the chip
-for line in lines:
-    line.release()
-chip.close()
+    def on_data_callback(self, data):
+        if data["up"] and data["down"]:
+            self.stop()
+        elif data["up"]:
+            self.up()
+        elif data["down"]:
+            self.down()
+        else:
+            self.stop()

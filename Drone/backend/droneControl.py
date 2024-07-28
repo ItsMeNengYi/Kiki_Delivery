@@ -50,6 +50,9 @@ class DroneControl():
         self.joystick_motor_y = 0
         self.joystick_motor_x = 0
 
+        self.rot_left = False
+        self.rot_right = False
+
         self.initialise()
 
     def __del__(self):
@@ -82,6 +85,8 @@ class DroneControl():
         self.data = data
         self.joystick_motor_x = float(self.data["movement"]["x"])
         self.joystick_motor_y = -float(self.data["movement"]["y"])
+        self.rot_left = bool(self.data["rot"]["left"])
+        self.rot_right = bool(self.data["rot"]["right"])
 
     def left_pwm_control(self):
         while True:
@@ -111,39 +116,53 @@ class DroneControl():
         self._line_right_in4.set_value(value)
         self._line_right_en.set_value(value)
     
-    def update_wheels_speed(self):
-        self.speed = round(math.sqrt(self.joystick_motor_x**2 + self.joystick_motor_y ** 2),2)
-        self.left_wheels_speed = self.speed
-        self.right_wheels_speed = self.speed
+    def update_wheels_speed(self, rot = False):
+        if not rot:
+            self.speed = round(math.sqrt(self.joystick_motor_x**2 + self.joystick_motor_y ** 2),2)
+            self.left_wheels_speed = self.speed
+            self.right_wheels_speed = self.speed
 
-        if self.joystick_motor_x != 0:
-            decelerate = math.sin(math.atan(abs(self.joystick_motor_y / self.joystick_motor_x)))
-            if self.joystick_motor_x > 0:
-                self.right_wheels_speed = decelerate
-            else:
-                self.left_wheels_speed = decelerate
-        
-        if self.joystick_motor_y > 0:
-            self.right_wheels_speed = 1 - self.right_wheels_speed
+            if self.joystick_motor_x != 0:
+                decelerate = math.sin(math.atan(abs(self.joystick_motor_y / self.joystick_motor_x)))
+                if self.joystick_motor_x > 0:
+                    self.right_wheels_speed = decelerate
+                else:
+                    self.left_wheels_speed = decelerate
+        else:
+            self.left_wheels_speed = 1
+            self.right_wheels_speed = 1
 
     def update(self):
-        if (self.speed != 0):
-            if (self.direction != (self.joystick_motor_y > 0)):
-                self.direction = self.joystick_motor_y > 0
-                # Forward
-                if (self.direction):
-                    self._line_right_in3.set_value(1)
-                    self._line_right_in4.set_value(1)
-                    self._line_left_in1.set_value(0)
-                    self._line_left_in2.set_value(1)
-                else:
-                    self._line_right_in3.set_value(0)
-                    self._line_right_in4.set_value(1)
-                    self._line_left_in2.set_value(0)
-                    self._line_left_in1.set_value(1)
+        if self.rot_left or self.rot_right:
+            if self.rot_left:
+                self._line_right_in3.set_value(1)
+                self._line_right_in4.set_value(0)
+                self._line_left_in2.set_value(0)
+                self._line_left_in1.set_value(1)
+            elif self.rot_right:
+                self._line_right_in3.set_value(0)
+                self._line_right_in4.set_value(1)
+                self._line_left_in1.set_value(0)
+                self._line_left_in2.set_value(1)
         else:
-            self.set_value_all_lines(0)
-        self.update_wheels_speed()
+            if (self.speed != 0):
+                if (self.direction != (self.joystick_motor_y > 0)):
+                    self.direction = self.joystick_motor_y > 0
+                    # Forward
+                    if (self.direction):
+                        self._line_right_in3.set_value(1)
+                        self._line_right_in4.set_value(0)
+                        self._line_left_in1.set_value(0)
+                        self._line_left_in2.set_value(1)
+                    else:
+                        self._line_right_in3.set_value(0)
+                        self._line_right_in4.set_value(1)
+                        self._line_left_in2.set_value(0)
+                        self._line_left_in1.set_value(1)
+            else:
+                self.set_value_all_lines(0)
+
+        self.update_wheels_speed(self.rot_left or self.rot_right)
 
     def addTextScreen(self, screen):
         self.textScreen = screen
