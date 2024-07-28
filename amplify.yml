@@ -3,40 +3,16 @@ frontend:
     phases:
       preBuild:
         commands:
-          # Install modules 
-          - cd Client
+          - cd ClientRNApp
           - npm install
-          # - cd ../ClientRNApp
-          # - npm install
       build:
         commands:
-          # Create a folder "builds" to store all the build files
-          # - cd ..
-          # - mkdir -p builds/control
-
-          # Build Client control page and copy over another folder
-          # - cd Client
-          - npm run build
-          # - cp -r dist/* ../builds/control/
-          # - rm -r dist
-
-          # Build Client home page
-          # - cd ../ClientRNApp
-          # - npx expo export -p web
-          # - cp -r dist/* ../builds/
-          # - rm -r dist
-
-          # Move assets
-          # - cd ..
-          # - cp -r builds/control/assets/* builds/assets/*
-          # - mv builds/control/index.html builds/control.html
-          # - rm -r builds/control
+          - npx expo export -p web
 
     artifacts:
-        baseDirectory: Client/dist
+        baseDirectory: ClientRNApp/dist
         files:
             - '**/*'
     cache:
         paths:
-          - Client/node_modules/**/*
-          # - ClientRNApp/node_modules/**/*
+          - ClientRNApp/node_modules/**/*
