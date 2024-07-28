@@ -160,6 +160,7 @@ export default class WebRTC {
             }
             if (this.pc.connectionState === "disconnected") {
                 await this.onDisconnect();
+                await db.clearCallDoc();
             }
             
             if (this.pc.connectionState === "failed") {
@@ -199,6 +200,7 @@ export default class WebRTC {
         this.sendToDrone(_default_droneControl);
         this.pc.close();
         await this.onDisconnect();
+        await db.clearCallDoc();
     }
 
     async setUserTime(duration) {
@@ -224,6 +226,5 @@ export default class WebRTC {
                                                                             + ' sec used';
             await this.setUserTime(Math.round(duration / 60.0 * 100)/100.0);
         }
-        await db.clearCallDoc();
     }
 }
