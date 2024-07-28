@@ -165,6 +165,7 @@ export default class WebRTC {
             if (this.pc.connectionState === "failed") {
                 this.connectButton.textContent = "Connection failed";
                 this.connectButton.style.backgroundColor = 'red';
+                await this.onDisconnect();
             }
 
             if (this.pc.connectionState === "connecting") {
