@@ -1,94 +1,55 @@
-# import threading
-# import json
-# import math
-# import gpiod
-
-# from time import sleep
-
-# # Pins
-# _PITCH_PIN = 12
-# _YAW_PIN = 24
-
-# class Gimbal():
-#     def __init__(self):
-#         # Chip
-#         self._chip = gpiod.Chip('gpiochip4')
-
-#         # gpio lines
-#         self._line_pitch = self._chip.get_line(_PITCH_PIN)
-#         self._line_yaw = self._chip.get_line(_YAW_PIN)
-
-#         self.servo_min_pulse_width = 544
-#         self.servo_max_pulse_width = 2400
-
-#         self.servo_freq = 333
-
-#         self.pitch_angle = 90
-#         self.yaw_angle = 135
-
-#     def __del__(self):
-#         self._line_pitch.release() 
-#         self._line_yaw.release() 
-
-#     def initialise(self):
-#         self._line_yaw.request(consumer='servo_control', type=gpiod.LINE_REQ_DIR_OUT)
-#         self._line_pitch.request(consumer='servo_control', type=gpiod.LINE_REQ_DIR_OUT)
+from gpiozero import AngularServo
+from time import time
 
 
-#         pitch_pwm_thread = threading.Thread(target=self.pitch_pwm_control)
-#         pitch_pwm_thread.start()  
-#         yaw_pwm_thread = threading.Thread(target=self.yaw_pwm_control)
-#         yaw_pwm_thread.start()  
+class CameraGimbal():
+    def __init__(self):
+        self.width_min = 544 / 1000000 
+        self.width_max = 2400 / 1000000
+        self.freq = 333
+        self.pitch_pin = 12
+        self.yaw_pin = 18
+
+        self.pitch_servo = AngularServo(self.pitch_pin, initial_angle= 135, min_angle=0, max_angle=270, min_pulse_width=self.width_min, max_pulse_width=self.width_max)
+        self.yaw_servo = AngularServo(self.yaw_pin, initial_angle= 135, min_angle=0, max_angle=270, min_pulse_width=self.width_min, max_pulse_width=self.width_max)
     
-#     # def on_message_callback(self, data):
-#     #     if data["message"] != self.data["message"]:
-#     #         self.textScreen.add_message(data["message"])
-#     #     self.data = data
+        self.data = None
+        self.joystick_x = 0
+        self.joystick_y = 0
 
-#     def pitch_pwm_control(self):
-#         pulse_width = self.pitch_angle / 270 * (self.servo_max_pulse_width - self.servo_min_pulse_width) + self.servo_min_pulse_width
-#         while True:
-#             self._line_pitch.set_value(1)
-#             sleep(pulse_width/1000/1000)
-#             self._line_pitch.set_value(0)
-#             sleep(1/self.servo_freq - pulse_width/1000/1000)
+        self.yaw_angle = 135
+        self.pitch_angle = 135
 
-#     def yaw_pwm_control(self):
-#         pulse_width = self.yaw_angle / 270 * (self.servo_max_pulse_width - self.servo_min_pulse_width) + self.servo_min_pulse_width
-#         while True:
-#             self._line_yaw.set_value(1)
-#             sleep(pulse_width/1000/1000)
-#             self._line_yaw.set_value(0)
-#             sleep(1/self.servo_freq - pulse_width/1000/1000)
+        self.prev_time = 0
 
-#     def update(self):
-#         self.pitch_angle = int(input("next angle"))
+    def on_message_callback(self, data):
+        self.data = data
+        self.joystick_x = float(self.data["cam"]["x"])
+        self.joystick_y = -float(self.data["cam"]["y"])
+        if self.yaw_angle != int(135 + self.joystick_y * 45) or self.pitch_angle != int(135 + -self.joystick_x * 45):
+            self.yaw_angle = int(135 + self.joystick_y * 45)
+            self.pitch_angle = int(135 + -self.joystick_x * 45)
+            self.pitch_servo.angle = self.pitch_angle
+            self.yaw_servo.angle = self.yaw_angle
+            self.prev_time = time()
 
-# cameragimbal = Gimbal()
-# cameragimbal.initialise()
-# while True:
-#     cameragimbal.update()
+    def update(self):
+        if (time() - self.prev_time > 0.04):
+            self.close_servo()
+        
 
-from rpi_hardware_pwm import HardwarePWM
-from time import sleep
+    def close_servo(self):
+        self.pitch_servo.detach() 
+        self.yaw_servo.detach()
 
-freq = 333
-pwm = HardwarePWM(pwm_channel=0, hz=freq, chip=2)
-width_min = 544
-width_max = 2400
-angle = 90
-width = angle/270 * (width_max - width_min) + width_min
-pwm.change_frequency(freq)
-
-pwm.start(width/(1/freq * 1000000)* 100) # full duty cycle
-# pwm.change_duty_cycle(50)
-sleep(2)
-pwm.stop()
 # from rpi_hardware_pwm import HardwarePWM
+# from time import sleep
+# from time import time
 
-# pwm = HardwarePWM(pwm_channel=0, hz=60, chip=2)
-# pwm.start(100) # full duty cycle
-
-# pwm.change_duty_cycle(50)
-# pwm.stop()
-
+# pwm = HardwarePWM(pwm_channel=2, hz=333, chip=2)
+# pwm.start(100)
+# pwm.change_duty_cycle((2400 / 1000000)/(1/333)*100 ) # full duty cycle
+# prev = time()
+# sleep(10)
+# print(time() - prev)
+# pwm.stop() 

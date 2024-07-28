@@ -6,7 +6,7 @@ import Socket from "./Backend/socket";
 const webRTC = new WebRTC();
 const server = new Socket();
 
-webRTC.initializeConnection();
+await webRTC.initializeConnection();
 server.initialise();
 
 webRTC.setOnDataCallback((data) => server.sendData(data));
